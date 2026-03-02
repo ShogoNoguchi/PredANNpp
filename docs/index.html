@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+  <title>PredANN++ — Music Identification from EEG via Acoustic & Expectation Representations</title>
+
+  <meta name="description" content="PredANN++: EEG-to-music representation pretraining via multitask masked prediction (MuQ / Surprisal / Entropy) for Song ID classification from brain activity." />
+
+  <!-- Open Graph (nice preview on SNS/Slack) -->
+  <meta property="og:title" content="PredANN++" />
+  <meta property="og:description" content="EEG-to-music representation pretraining via multitask masked prediction (MuQ / Surprisal / Entropy) for Song ID classification." />
+  <meta property="og:type" content="website" />
+  <!-- Optional: set when you add an image -->
+<meta property="og:image" content="https://shogonoguchi.github.io/MusicFeaturePred_Surp_Ent_MuQ/assets/img/concept.png" />
+
+  <link rel="stylesheet" href="./assets/style.css" />
+</head>
+<body>
+
+  <!-- NAV -->
+  <div class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="./index.html">
+        <div class="logo" aria-hidden="true"></div>
+        <div class="brand-title">
+          <strong>PredANN++</strong>
+          <span>EEG → Song ID with acoustic & expectation representations</span>
+        </div>
+      </a>
+
+      <div class="nav-links" aria-label="Site navigation">
+        <a href="#overview">Overview</a>
+        <a href="#results">Results</a>
+        <a href="#demo">Demo</a>
+        <a href="#checkpoints">Checkpoints</a>
+        <a href="#dataset">Dataset</a>
+        <a href="#authors">Authors</a>
+        <a href="./cli_reference.html">CLI</a>
+      </div>
+
+      <div class="nav-actions">
+        <button id="themeToggle" class="btn ghost" aria-label="Switch theme">🌙 Dark</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- HERO -->
+  <div class="container hero">
+    <div class="hero-grid">
+      <div class="card hero-main">
+        <h1 class="h-title">Expectation and Acoustic Neural Network Representations Enhance Music Identification from Brain Activity</h1>
+        <p class="h-sub">
+          PredANN++ pretrains an EEG encoder by predicting discretized teacher representations from audio:
+          <strong>Acoustic (MuQ)</strong> and <strong>Expectation (MusicGen-derived Surprisal / Entropy)</strong>,
+          using multitask learning with <strong>50% masking</strong>. The learned representations improve EEG-based Song ID classification and
+          provide complementary gains when ensembled.
+        </p>
+
+        <div class="badges" aria-label="Badges">
+          <div class="badge"><strong>Task</strong>: 10-way Song ID from EEG (NMED-T)</div>
+          <div class="badge"><strong>Input</strong>: 3s EEG (128ch @125Hz)</div>
+          <div class="badge"><strong>Teachers</strong>: MuQ / Surprisal / Entropy</div>
+          <div class="badge"><strong>Eval</strong>: SW_valid deterministic cropping</div>
+        </div>
+
+        <hr class="sep" />
+
+        <div class="badges" aria-label="Quick links">
+          <!-- IMPORTANT: Replace the GitHub repo URL if your repository name differs -->
+          <a class="btn primary" href="https://github.com/ShogoNoguchi/MusicFeaturePred_Surp_Ent_MuQ" target="_blank" rel="noopener">GitHub</a>
+
+          <a class="btn" href="https://huggingface.co/Shogo-Noguchi/PredANNpp-Entropy-ctx16" target="_blank" rel="noopener">Hugging Face (Entropy)</a>
+          <a class="btn" href="https://huggingface.co/Shogo-Noguchi/PredANNpp-Surprisal-ctx16" target="_blank" rel="noopener">Hugging Face (Surprisal)</a>
+
+          <!-- ArXiv: Coming soon -->
+          <a class="btn disabled" data-soon="true" aria-disabled="true" href="#">arXiv (Coming Soon)</a>
+
+          <!-- Optional: Paper PDF -->
+          <a class="btn disabled" data-soon="true" aria-disabled="true" href="#">Paper PDF (Coming Soon)</a>
+        </div>
+
+        <p class="small" style="margin-top:12px;">
+          <strong>Notes:</strong> The Hugging Face repos are currently private for review, and will be made public upon publication.
+          arXiv link will be updated as soon as it is available.
+        </p>
+      </div>
+
+      <div class="card hero-side">
+        <div class="side-block">
+          <h3>At-a-glance</h3>
+          <div class="kv">
+            <div class="k">Method</div><div class="v">Masked multitask pretraining (teacher-token prediction + Song ID auxiliary)</div>
+            <div class="k">Teachers</div><div class="v">MuQ (acoustic), Surprisal / Entropy (expectation)</div>
+            <div class="k">Dataset</div><div class="v"><a href="#dataset">NMED-T (20 subjects × 10 songs)</a></div>
+            <div class="k">License</div><div class="v">CC BY-SA 4.0</div>
+          </div>
+        </div>
+
+        <div class="side-block">
+          <h3>Reproducibility</h3>
+          <div class="kv">
+            <div class="k">Seed</div><div class="v">42 (main), baseline seeds: 0 / 1 / 42</div>
+            <div class="k">EEG norm</div><div class="v">RobustScaler + clamp [-20, 20] (MetaAI)</div>
+            <div class="k">Window</div><div class="v">SW_valid: window=1000, stride=200</div>
+            <div class="k">CLI docs</div><div class="v"><a href="./cli_reference.html">Rendered CLI Reference</a></div>
+          </div>
+        </div>
+
+        <div class="side-block">
+          <h3>Where to put assets (beginner-friendly)</h3>
+          <div class="notice">
+            Put images in <code>docs/assets/img/</code><br/>
+            Put videos in <code>docs/assets/video/</code><br/>
+            This page auto-shows placeholders if files are missing.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<!-- CONCEPT TEASER (Main claim figure) -->
+<div class="container" style="margin-top:40px;">
+  <div class="card media" style="padding:0; overflow:hidden;">
+    <img
+      src="./assets/img/concept.png"
+      alt="Conceptual overview of PredANN++"
+      style="width:100%; display:block;"
+    />
+  </div>
+
+  <div class="notice" style="margin-top:18px; font-size:16px;">
+    <strong>Main Claim.</strong>
+    EEG representation learning should be guided by neurobiologically distinct teacher representations 
+    (acoustic vs expectation), not merely random initialization diversity.
+  </div>
+</div>
+  <!-- OVERVIEW / ABSTRACT -->
+  <div id="overview" class="container section anchor">
+    <h2>Overview (Abstract)</h2>
+    <div class="card" style="padding:18px;">
+      <p style="margin:0;">
+        During music listening, cortical activity encodes both acoustic and expectation-related information.
+        Prior work has shown that ANN representations resemble cortical representations and can serve as supervisory signals for EEG recognition.
+        Here we show that distinguishing acoustic and expectation-related ANN representations as teacher targets improves EEG-based music identification.
+        Models pretrained to predict either representation outperform non-pretrained baselines, and combining them yields complementary gains that exceed strong seed ensembles formed by varying random initializations.
+        These findings show that teacher representation type shapes downstream performance and that representation learning can be guided by neural encoding.
+      </p>
+      <hr class="sep" />
+      <p class="small" style="margin:0;">
+        <strong>What you should update tomorrow morning:</strong><br/>
+        When arXiv becomes available, edit <code>docs/index.html</code> and replace the two “Coming Soon” buttons with real links.
+      </p>
+    </div>
+  </div>
+
+  <!-- FIGURES (Architecture + Data prep) -->
+  <div class="container section">
+    <div class="grid-2">
+      <div class="card media">
+        <img
+          src="./assets/img/Neural_Network_Architecture.png"
+          alt="PredANN++ Neural Network Architecture"
+          data-fallback="Missing image: docs/assets/img/Neural_Network_Architecture.png  (copy from your figs/Neural_Network_Architecture.png)"
+        />
+        <div class="cap">
+          <strong>Architecture</strong> — EEG encoder + masked teacher prediction (MuQ / Surprisal / Entropy) + auxiliary Song ID head.
+        </div>
+      </div>
+
+      <div class="card media">
+        <img
+          src="./assets/img/data_prep.png"
+          alt="ANN representation calculation and discretization"
+          data-fallback="Missing image: docs/assets/img/data_prep.png  (copy from your figs/data_prep.png)"
+        />
+        <div class="cap">
+          <strong>Teacher representations</strong> — MuQ acoustic embeddings (40ms) and MusicGen-based Surprisal/Entropy (20ms), discretized to 128 levels.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESULTS -->
+  <div id="results" class="container section anchor">
+    <h2>Results</h2>
+    <p>
+      Below is a compact summary table (from your manuscript text) and slots for the main result figures.
+      Put exported PNGs into <code>docs/assets/img/</code> with the exact filenames shown.
+    </p>
+
+    <div class="card" style="padding:14px;">
+      <div class="table-wrap">
+        <table aria-label="Results table">
+          <thead>
+            <tr>
+              <th>Category</th>
+              <th>Model / Ensemble</th>
+              <th>Accuracy</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Baseline (Full-scratch)</strong></td>
+              <td>Seed 0 / 1 / 42 (mean)</td>
+              <td><strong>0.823</strong> (0.832 / 0.809 / 0.827)</td>
+              <td>Transformer EEG encoder trained from scratch.</td>
+            </tr>
+            <tr>
+              <td><strong>Single model (teacher pretrain)</strong></td>
+              <td>Acoustic (MuQ)</td>
+              <td><strong>0.859</strong></td>
+              <td>Best single model.</td>
+            </tr>
+            <tr>
+              <td><strong>Single model (teacher pretrain)</strong></td>
+              <td>Surprisal (ctx16)</td>
+              <td><strong>0.855</strong></td>
+              <td>Expectation-related representation.</td>
+            </tr>
+            <tr>
+              <td><strong>Single model (teacher pretrain)</strong></td>
+              <td>Entropy (ctx16)</td>
+              <td><strong>0.850</strong></td>
+              <td>Expectation-related representation.</td>
+            </tr>
+            <tr>
+              <td><strong>2-model ensemble</strong></td>
+              <td>Acoustic + Surprisal</td>
+              <td><strong>0.881</strong></td>
+              <td>Probability averaging.</td>
+            </tr>
+            <tr>
+              <td><strong>2-model ensemble</strong></td>
+              <td>Acoustic + Entropy</td>
+              <td><strong>0.879</strong></td>
+              <td>Probability averaging.</td>
+            </tr>
+            <tr>
+              <td><strong>2-model ensemble</strong></td>
+              <td>Surprisal + Entropy</td>
+              <td><strong>0.880</strong></td>
+              <td>Probability averaging.</td>
+            </tr>
+            <tr>
+              <td><strong>3-model ensemble</strong></td>
+              <td>Acoustic + Surprisal + Entropy</td>
+              <td><strong>0.887</strong> <span class="pill good">Best</span></td>
+              <td>Representation diversity ensemble.</td>
+            </tr>
+            <tr>
+              <td><strong>Seed ensemble</strong></td>
+              <td>Seeds 0 + 1 + 42</td>
+              <td><strong>0.878</strong></td>
+              <td>Initialization diversity baseline.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="notice" style="margin-top:12px;">
+        <strong>Figure slots:</strong> Export your manuscript figures as PNG and place them into <code>docs/assets/img/</code> with the filenames below.
+      </div>
+    </div>
+
+    <div class="grid-2" style="margin-top:16px;">
+      <div class="card media">
+        <img
+          src="./assets/img/figure3_single_model_comparison.png"
+          alt="Single model comparison"
+          data-fallback="Missing image: docs/assets/img/figure3_single_model_comparison.png  (export from your paper: single model comparison figure)"
+        />
+        <div class="cap">
+          <strong>Single models</strong> — Baselines vs. MuQ / Surprisal / Entropy (ctx16).
+        </div>
+      </div>
+
+      <div class="card media">
+        <img
+          src="./assets/img/figure4_ensemble_effectiveness.png"
+          alt="Ensemble effectiveness"
+          data-fallback="Missing image: docs/assets/img/figure4_ensemble_effectiveness.png  (export from your paper: ensemble effectiveness figure)"
+        />
+        <div class="cap">
+          <strong>Ensembles</strong> — 2-model and 3-model (Acoustic+Surprisal+Entropy) improvements.
+        </div>
+      </div>
+
+      <div class="card media">
+        <img
+          src="./assets/img/figure2_context_optimization.png"
+          alt="Context window optimization"
+          data-fallback="Missing image: docs/assets/img/figure2_context_optimization.png "
+        />
+        <div class="cap">
+          <strong>Context optimization</strong> — Surprisal/Entropy peak around ctx=16s.
+        </div>
+      </div>
+
+      <div class="card media">
+        <img
+          src="./assets/img/figure6_seed_vs_finetune.png"
+          alt="Representation ensemble vs seed ensemble"
+          data-fallback="Missing image: docs/assets/img/figure6_seed_vs_finetune.png  "
+        />
+        <div class="cap">
+          <strong>Key claim</strong> — Representation diversity outperforms initialization diversity.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DEMO -->
+  <div id="demo" class="container section anchor">
+    <h2>Demo (Gradio)</h2>
+    <p>
+      This section hosts a demo video (<code>demo.py</code> running).
+      Put your MP4 in <code>docs/assets/video/demo.mp4</code>.
+      If you want to add more videos later, just drop additional MP4s in the same folder and add one HTML block.
+    </p>
+
+    <div class="grid-2">
+      <div class="card media">
+        <video
+          controls
+          preload="metadata"
+          src="./assets/video/demo.mp4"
+          data-fallback="Missing video: docs/assets/video/demo.mp4  (record a short run of demo.py and export to MP4)"
+        ></video>
+        <div class="cap">
+          <strong>Demo video</strong> — Running <code>python demo.py --dataset_dir ...</code> and showing inference + quick accuracy.
+        </div>
+      </div>
+
+      <div class="card" style="padding:14px;">
+        <div class="notice">
+          <strong>How to record the demo video (easy and small):</strong><br/>
+          1) Record with OBS (recommended) or any screen recorder.<br/>
+          2) Export to MP4.<br/>
+          3) If file is large, compress with ffmpeg (Ubuntu):<br/>
+          <div class="codebar">
+            <div class="label">ffmpeg compress (recommended)</div>
+            <button class="copybtn" data-copy-target="ffmpeg1">Copy</button>
+          </div>
+          <pre id="ffmpeg1" class="code">ffmpeg -i input.mp4 -vf "scale=1280:-2" -c:v libx264 -crf 28 -preset veryslow -c:a aac -b:a 128k docs/assets/video/demo.mp4</pre>
+          <div class="small">
+            GitHub repoに置くなら、できれば <strong>~50MB以下</strong> を目標にすると運用が楽。
+          </div>
+        </div>
+
+        <hr class="sep" />
+
+        <div class="notice">
+          <strong>Optional: Add extra videos</strong><br/>
+          例）<code>docs/assets/video/supplementary_1.mp4</code> を置いたら、<br/>
+          <code>index.html</code> の Demo セクションに以下をコピペで追加するだけ：
+          <div class="codebar">
+            <div class="label">Extra video block</div>
+            <button class="copybtn" data-copy-target="extraVideo">Copy</button>
+          </div>
+          <pre id="extraVideo" class="code">&lt;div class="card media"&gt;
+  &lt;video controls preload="metadata" src="./assets/video/supplementary_1.mp4"&gt;&lt;/video&gt;
+  &lt;div class="cap"&gt;&lt;strong&gt;Supplementary video 1&lt;/strong&gt; — description here.&lt;/div&gt;
+&lt;/div&gt;</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="padding:14px; margin-top:16px;">
+      <h3 style="margin:0 0 10px; font-size:16px;">Quick start (Demo)</h3>
+      <div class="codebar">
+        <div class="label">Install & launch</div>
+        <button class="copybtn" data-copy-target="demoCmd">Copy</button>
+      </div>
+      <pre id="demoCmd" class="code">pip install -r requirements.txt
+pip install -r requirements_demo.txt
+python demo.py --dataset_dir /path/to/NMED-T_dataset</pre>
+      <div class="small">
+        The demo uses the same dataloader as training: <code>codes_3s/predann/datasets/preprocessing_eegmusic_dataset_3s.py</code>.
+      </div>
+    </div>
+  </div>
+
+  <!-- CHECKPOINTS -->
+  <div id="checkpoints" class="container section anchor">
+    <h2>Pretrained Checkpoints (Hugging Face)</h2>
+    <p>Released checkpoints for finetuning / evaluation (Song ID). If your HF repos are still private, keep this as-is; link still works for reviewers.</p>
+
+    <div class="card" style="padding:14px;">
+      <div class="table-wrap">
+        <table aria-label="Checkpoints table">
+          <thead>
+            <tr>
+              <th>Model</th>
+              <th>Target representation</th>
+              <th>Context</th>
+              <th>Pretraining</th>
+              <th>Finetuning</th>
+              <th>Link</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>PredANN++ Entropy</strong></td>
+              <td>MusicGen Entropy</td>
+              <td>16s</td>
+              <td>10k epochs (50% masking)</td>
+              <td>3.5k epochs</td>
+              <td><a href="https://huggingface.co/Shogo-Noguchi/PredANNpp-Entropy-ctx16" target="_blank" rel="noopener">Shogo-Noguchi/PredANNpp-Entropy-ctx16</a></td>
+            </tr>
+            <tr>
+              <td><strong>PredANN++ Surprisal</strong></td>
+              <td>MusicGen Surprisal</td>
+              <td>16s</td>
+              <td>10k epochs (50% masking)</td>
+              <td>3.5k epochs</td>
+              <td><a href="https://huggingface.co/Shogo-Noguchi/PredANNpp-Surprisal-ctx16" target="_blank" rel="noopener">Shogo-Noguchi/PredANNpp-Surprisal-ctx16</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="notice" style="margin-top:12px;">
+        <strong>Reviewer note:</strong> If you also ship temporary checkpoints in <code>checkpoints/</code>, mention that in the GitHub README (already done).
+      </div>
+    </div>
+  </div>
+
+  <!-- DATASET -->
+  <div id="dataset" class="container section anchor">
+    <h2>Dataset</h2>
+    <p>
+      This work uses <strong>NMED-T</strong> (Naturalistic Music EEG Dataset – Tempo).
+      The repository does not include EEG/audio files. Please download the dataset from Stanford Digital Repository.
+    </p>
+
+    <div class="card" style="padding:14px;">
+      <div class="notice">
+        <strong>Dataset link:</strong><br/>
+        NMED-T (Stanford Digital Repository): <a href="https://purl.stanford.edu/jn859kj8079" target="_blank" rel="noopener">https://purl.stanford.edu/jn859kj8079</a>
+      </div>
+
+      <hr class="sep" />
+
+      <h3 style="margin:0 0 10px; font-size:16px;">Expected directory structure</h3>
+      <div class="codebar">
+        <div class="label">NMED-T base dir</div>
+        <button class="copybtn" data-copy-target="dsTree">Copy</button>
+      </div>
+      <pre id="dsTree" class="code">NMED-T_dataset/
+├── audio/
+│   ├── 21.wav
+│   ├── 22.wav
+│   └── ...
+├── DS_EEG_pkl/
+│   ├── 2_21_1.pkl
+│   ├── 2_22_1.pkl
+│   └── ...
+├── NoClip_Discreat_K1Surprisal/
+├── Entropy_k1_Q128/
+├── MuQ_Discreat_K128/
+├── surprisal_k1/
+├── MuQ_Continuous_embedding/
+└── entropy_k1/</pre>
+
+      <div class="small">
+        Preprocessing scripts: <code>scripts/data_prep/</code> (see your README).
+      </div>
+    </div>
+  </div>
+
+  <!-- AUTHORS -->
+  <div id="authors" class="container section anchor">
+    <h2>Authors</h2>
+    <div class="card" style="padding:18px;">
+      <p style="margin:0 0 10px;">
+        <strong>Shogo Noguchi</strong><sup>1,*</sup>,
+        <strong>Taketo Akama</strong><sup>1,*</sup>,
+        <strong>Tai Nakamura</strong><sup>1</sup>,
+        <strong>Shun Minamikawa</strong><sup>1</sup>,
+        <strong>Natalia Polouliakh</strong><sup>1</sup>
+      </p>
+      <p style="margin:0;">
+        <sup>1</sup>Sony Computer Science Laboratories, Inc, Tokyo, Japan<br/>
+        <sup>*</sup>Equal contribution, corresponding authors
+      </p>
+
+      <hr class="sep" />
+
+      <div class="notice">
+        <strong>arXiv:</strong> Coming soon (update link tomorrow).<br/>
+        <strong>Contact:</strong> Add corresponding emails here if you want it public.
+      </div>
+    </div>
+  </div>
+
+  <!-- CITE -->
+  <div id="cite" class="container section anchor">
+    <h2>How to Cite</h2>
+    <div class="card" style="padding:14px;">
+      <div class="codebar">
+        <div class="label">BibTeX</div>
+        <button class="copybtn" data-copy-target="bibtex">Copy</button>
+      </div>
+      <pre id="bibtex" class="code">@article{noguchi2026predannpp,
+  title   = {Expectation and Acoustic Neural Network Representations Enhance Music Identification from Brain Activity},
+  author  = {Noguchi, Shogo and Akama, Taketo and Nakamura, Tai and Minamikawa, Shun and Polouliakh, Natalia},
+  year    = {2026},
+  note    = {arXiv: coming soon}
+}</pre>
+      <div class="small">
+        Replace the BibTeX key/year/arXiv fields as soon as your arXiv entry is live.
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="container footer">
+    <div>© <span id="year"></span> PredANN++ — Licensed under CC BY-SA 4.0</div>
+    <div class="fine">
+      This GitHub Pages site is served from <code>/docs</code>.  
+      To update: commit changes under <code>docs/</code> and push to <code>main</code>.
+    </div>
+  </div>
+
+  <script src="./assets/site.js"></script>
+</body>
+</html>
