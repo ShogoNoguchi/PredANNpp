@@ -1,6 +1,11 @@
-# PredANN++:Expectation and Acoustic Neural Network Representations Enhance Music Identification from Brain Activity
+# Expectation and Acoustic Neural Network Representations Enhance Music Identification from Brain Activity
 
-EEG-to-Music encoder pretraining via multitask learning (Surprisal / Entropy / MuQ prediction with 50% masking).
+**PredANN++** is a representation-learning framework for EEG-based music identification.
+
+The model learns EEG representations by predicting music-derived neural network features (Acoustic / Surprisal / Entropy) computed from the corresponding audio stimulus.  
+By aligning EEG signals with acoustic and expectation-related teacher representations, PredANN++ enhances downstream EEG-based song identification performance.
+
+This repository provides the full training pipeline, pretrained checkpoints, and evaluation code for reproducible EEG-to-music decoding.
 
 ## Neural Network Architecture
 
