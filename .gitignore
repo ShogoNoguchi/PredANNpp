@@ -1,0 +1,53 @@
+# Logs
+*.log
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Training runs / outputs
+runs/
+log/
+*/log/
+*/logs/
+
+
+# ============================================================
+# Data preprocessing outputs (do NOT commit to repo)
+# ============================================================
+# Generated audio chunks
+audio_30s/
+
+# Generated feature files from preprocessing
+surprisal_k1/
+entropy_k1/
+MuQ_Continuous_embedding/
+MuQ_Discreat_K128/
+
+# Cached logits from MusicGen
+logits_k1/
+logits_k1_stride0p1/
+
+# Optional pre-computed discrete features
+NoClip_Discreat_K1Surprisal/
+Entropy_k1_Q128/
+SurpEnt0.1stride/
+
+# Large datasets (if included locally)
+NMED-T_dataset/
+DS_EEG_pkl/
+
+# MuQ checkpoints (if cloned locally)
+MuQ/snapshots/
+
+# ============================================================
+# Generated data and caches
+# ============================================================
+*.npy
+*.pkl
+*.csv
+
+# Temporary files
+*.tmp
+*.temp
+~*

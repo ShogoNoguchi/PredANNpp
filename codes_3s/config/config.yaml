@@ -1,0 +1,37 @@
+# infra options
+gpus: 1
+accelerator: "dp" 
+workers: 8 
+dataset_dir: "./data"
+
+# train options
+seed: 42
+batch_size: 48
+max_epochs: 3500
+dataset: "preprocessing_eegmusic" 
+supervised: 1 
+
+# loss options
+optimizer: "Adam" 
+learning_rate: 0.003 
+
+# other options
+eval_only: 0
+
+# for experiment
+training_date: "tmp"
+eeg_normalization: "MetaAI"
+openmiir_augmentation: "no_augmentation"
+eeg_sample_rate: 125
+eeg_length: 375
+clamp_value: 20
+split_seed: 42
+class_song_id: "[21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36]" 
+train_test_splitting: "none"
+
+# for sliding window
+window_size: 1000
+stride: 200
+
+# for shifting time delay
+shifting_time: 200

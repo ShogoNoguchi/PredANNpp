@@ -1,0 +1,5 @@
+# Demo-only dependencies for PredANN++ (Gradio UI)
+# Python 3.8 compatible range (avoid requiring Python>=3.9)
+gradio>=3.0,<4.0
+matplotlib>=3.3
+pillow>=8.0

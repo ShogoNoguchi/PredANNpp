@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+SEED="${1:-42}"
+RUN_NAME="${2:-MuQMultitask_Finetune_seed${SEED}}"
+
+cd "$ROOT_DIR"
+
+python main_3s.py \
+  --mode MuQMultitask \
+  --seed "$SEED" \
+  --training_date "$RUN_NAME"
