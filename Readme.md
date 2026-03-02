@@ -1,4 +1,4 @@
-# PredANN++
+# PredANN++:Expectation and Acoustic Neural Network Representations Enhance Music Identification from Brain Activity
 
 EEG-to-Music encoder pretraining via multitask learning (Surprisal / Entropy / MuQ prediction with 50% masking).
 
