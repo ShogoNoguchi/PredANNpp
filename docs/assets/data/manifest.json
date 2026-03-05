@@ -1,0 +1,58 @@
+{
+  "dataset_name": "MTG-Jamendo subset for demo + NMED-T aligned features",
+  "dataset_citation": {
+    "key": "bogdanov2019mtg",
+    "author": "Bogdanov, Dmitry and Won, Minz and Tovstogan, Philip and Porter, Alastair and Serra, Xavier",
+    "title": "The MTG-Jamendo Dataset for Automatic Music Tagging",
+    "booktitle": "Machine Learning for Music Discovery Workshop, International Conference on Machine Learning (ICML 2019)",
+    "year": "2019",
+    "address": "Long Beach, CA, United States",
+    "url": "http://hdl.handle.net/10230/42015"
+  },
+  "license_notice": {
+    "code_license": "Apache-2.0",
+    "metadata_license": "CC BY-NC-SA 4.0",
+    "audio_license_note": "Audio files are licensed under track-specific Creative Commons licenses.",
+    "copyright": "Copyright 2019-2023 Music Technology Group",
+    "non_commercial_restriction": "MTG-Jamendo Dataset is available solely for non-commercial research and academic use.",
+    "commercial_contact": "hello@jamendo.com"
+  },
+  "discretization": {
+    "description": "Surprisal and Entropy continuous sequences were pooled over NMED-T 10 tracks and these 3 demo tracks. Feature-wise 128-bin equal-frequency (quantile) binning was applied and values were mapped to integer labels 0-127."
+  },
+  "tracks": [
+    {
+      "id": "lovely_tryad",
+      "display_title": "Lovely - Tryad",
+      "artist_credit": "Lovely by Tryad from Jamendo",
+      "audio_url": "./assets/audio/Lovely_-_tryad.mp3",
+      "data_url": "./assets/data/lovely_tryad_q128.json",
+      "source_url": "http://www.jamendo.com/track/26741",
+      "license_name": "Creative Commons Attribution-ShareAlike 2.5",
+      "license_url": "http://creativecommons.org/licenses/by-sa/2.5/",
+      "max_duration_s": 240
+    },
+    {
+      "id": "may_alexander_blu",
+      "display_title": "May - Alexander Blu",
+      "artist_credit": "May by Alexander Blu from Jamendo",
+      "audio_url": "./assets/audio/May_-_alexander.blu.mp3",
+      "data_url": "./assets/data/may_alexander_blu_q128.json",
+      "source_url": "http://www.jamendo.com/track/950",
+      "license_name": "Creative Commons Attribution-ShareAlike 3.0",
+      "license_url": "http://creativecommons.org/licenses/by-sa/3.0/",
+      "max_duration_s": 240
+    },
+    {
+      "id": "stickybee_josh_woodward",
+      "display_title": "Stickybee - Josh Woodward",
+      "artist_credit": "Stickybee by Josh Woodward from Jamendo",
+      "audio_url": "./assets/audio/Stickybee_-_joshwoodward.mp3",
+      "data_url": "./assets/data/stickybee_josh_woodward_q128.json",
+      "source_url": "http://www.jamendo.com/track/78305",
+      "license_name": "Creative Commons Attribution 3.0",
+      "license_url": "http://creativecommons.org/licenses/by/3.0/",
+      "max_duration_s": 240
+    }
+  ]
+}

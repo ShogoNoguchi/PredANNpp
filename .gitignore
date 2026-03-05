@@ -40,6 +40,9 @@ DS_EEG_pkl/
 # MuQ checkpoints (if cloned locally)
 MuQ/snapshots/
 
+#export script 
+scripts/data_prep/export_song21_web_data.py
+
 # ============================================================
 # Generated data and caches
 # ============================================================

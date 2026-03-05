@@ -1,0 +1,26 @@
+Demo audio attribution and licenses (MTG-Jamendo subset)
+
+1) 41/26741.mp3
+Lovely by Tryad from Jamendo: http://www.jamendo.com/track/26741
+License: Creative Commons Attribution-ShareAlike 2.5
+http://creativecommons.org/licenses/by-sa/2.5/
+
+2) 50/950.mp3
+May by Alexander Blu from Jamendo: http://www.jamendo.com/track/950
+License: Creative Commons Attribution-ShareAlike 3.0
+http://creativecommons.org/licenses/by-sa/3.0/
+
+3) 05/78305.mp3
+Stickybee by Josh Woodward from Jamendo: http://www.jamendo.com/track/78305
+License: Creative Commons Attribution 3.0
+http://creativecommons.org/licenses/by/3.0/
+
+Dataset citation:
+@conference {bogdanov2019mtg,
+    author = "Bogdanov, Dmitry and Won, Minz and Tovstogan, Philip and Porter, Alastair and Serra, Xavier",
+    title = "The MTG-Jamendo Dataset for Automatic Music Tagging",
+    booktitle = "Machine Learning for Music Discovery Workshop, International Conference on Machine Learning (ICML 2019)",
+    year = "2019",
+    address = "Long Beach, CA, United States",
+    url = "http://hdl.handle.net/10230/42015"
+}

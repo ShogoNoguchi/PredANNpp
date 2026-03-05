@@ -162,6 +162,9 @@ For a full CLI reference and [.sh]-independent examples, see:
 - [`docs/cli_reference.md`](docs/cli_reference.md)
 - [`docs/README.md`](docs/README.md)
 
+For local GitHub Pages verification (including the Song 21 synchronized visualization), run the localhost flow in:
+- [`docs/README.md` section "GitHub Pages local test (before push)"](docs/README.md)
+
 ### Modes
 This repository supports Finetune and Multitask modes:
 - Finetune

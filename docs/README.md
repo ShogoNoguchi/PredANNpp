@@ -136,3 +136,41 @@ Outputs:
 - Cached logits: analysis_outputs/logits/...
 - JSON metrics: analysis_outputs/metrics/evaluation_YYYYMMDD_HHMMSS.json
 
+## 5) GitHub Pages local test (before push)
+
+For the synchronized demo-track visualization in `docs/index.html`, always test via localhost (not `file://`).
+
+```bash
+cd docs
+python3 -m http.server 8000
+```
+
+Open:
+
+```text
+http://localhost:8000/index.html
+```
+
+Checklist for the `Demo Track Sync Visualization (continuous timeline)` section:
+
+- Source selector switches among 3 demo tracks
+- Data load succeeds from `docs/assets/data/manifest.json` and per-track JSON files
+- Audio loads from `docs/assets/audio/*.mp3`
+- Feature toggle switches `Surprisal (Q128)` and `Entropy (Q128)`
+- Playback/visualization upper bound is 240 sec, while shorter tracks end at natural duration
+- Zoom and timeline interactions update the plotted time range continuously
+- Red playback head moves smoothly during play
+- Clicking or dragging on the graph seeks `audio.currentTime` correctly
+
+## 6) Discretization method used for demo curves
+
+Surprisal and Entropy continuous sequences were pooled across all songs (NMED-T 10 songs + demo 3 songs),
+then feature-wise 128-bin equal-frequency quantile binning was applied.
+Using the resulting bin boundaries, each frame value was converted to a discrete label in the range 0–127.
+
+## 7) Demo audio licensing notes
+
+The 3 demo audio tracks are extracted from MTG-Jamendo and are provided for non-commercial research/academic use.
+Track-specific attributions and Creative Commons licenses are listed in `docs/audio_licenses.txt`.
+For commercial use, contact Jamendo licensing team: `hello@jamendo.com`.
+
