@@ -15,6 +15,7 @@
       localStorage.setItem("predannpp_theme", t);
       themeBtn.setAttribute("aria-label", t === "dark" ? "Switch to light mode" : "Switch to dark mode");
       themeBtn.textContent = t === "dark" ? "🌙 Dark" : "☀️ Light";
+      window.dispatchEvent(new Event("predannpp-theme-changed"));
     }
     applyTheme(docRoot.getAttribute("data-theme") || "dark");
     themeBtn.addEventListener("click", function () {
@@ -226,17 +227,22 @@
       if (W <= 0 || H <= 0) { return; }
       ctx2d.clearRect(0, 0, W, H);
 
+      const rs = getComputedStyle(document.documentElement);
+      const borderColor = (rs.getPropertyValue("--line2") || "rgba(255,255,255,0.18)").trim();
+      const gridColor = (rs.getPropertyValue("--line") || "rgba(255,255,255,0.12)").trim();
+      const axisTextColor = (rs.getPropertyValue("--muted") || "rgba(255,255,255,.85)").trim();
+
       const PL = 46, PR = 10, PT = 14, PB = 28;
       const pw = Math.max(10, W - PL - PR);
       const ph = Math.max(10, H - PT - PB);
 
       // Border
-      ctx2d.strokeStyle = "rgba(255,255,255,0.18)";
+      ctx2d.strokeStyle = borderColor;
       ctx2d.lineWidth = 1;
       ctx2d.strokeRect(PL, PT, pw, ph);
 
       // Grid (¼, ½, ¾)
-      ctx2d.strokeStyle = "rgba(255,255,255,0.12)";
+      ctx2d.strokeStyle = gridColor;
       ctx2d.lineWidth = 1;
       for (let g = 1; g < 4; g++) {
         const y = PT + ph * g / 4;
@@ -246,7 +252,6 @@
       // Feature curve
       const series = buildSeries();
       if (series.length >= 2) {
-        const rs = getComputedStyle(document.documentElement);
         ctx2d.strokeStyle = feature === "ent"
           ? (rs.getPropertyValue("--accent2") || "#25d3ff").trim()
           : (rs.getPropertyValue("--accent") || "#7c5cff").trim();
@@ -261,7 +266,7 @@
       }
 
       // Y-axis labels
-      ctx2d.fillStyle = "rgba(255,255,255,.85)";
+      ctx2d.fillStyle = axisTextColor;
       ctx2d.font = "12px sans-serif";
       ctx2d.fillText("127", 12, PT + 4);
       ctx2d.fillText("64", 18, PT + ph * 0.5 + 4);
@@ -438,6 +443,7 @@
       draw();
     }
     window.addEventListener("resize", resizeCanvas);
+    window.addEventListener("predannpp-theme-changed", () => { updateUI(); draw(); });
 
     function computeDataEndSec(json) {
       if (!json || !Array.isArray(json.start_s) || json.start_s.length === 0) { return 0; }

@@ -322,7 +322,7 @@
     <h2>Demo Track Surprisal/Entropy Visualization</h2>
     <p>
       Visualization for Surprisal/Entropy Q128 sequences. The page loads three demo tracks and synchronized
-      Surprisal/Entropy data.
+      Surprisal/Entropy data (context window of 16 seconds).
       Timeline sync is aligned to <code>segment_start_s</code>, with a hard upper bound of 240 sec
       (shorter tracks end at their natural duration).
     </p>
@@ -400,51 +400,16 @@
     <h2>Demo (Gradio)</h2>
     <p>
       This section hosts a demo video (<code>demo.py</code> running).
-      Put your MP4 in <code>docs/assets/video/demo.mp4</code>.
-      If you want to add more videos later, just drop additional MP4s in the same folder and add one HTML block.
+      Video file: <code>docs/assets/video/gradio_demo.mp4</code>.
     </p>
 
-    <div class="grid-2">
+    <div>
       <div class="card media">
-        <video controls preload="metadata" src="./assets/video/demo.mp4"
-          data-fallback="Missing video: docs/assets/video/demo.mp4  (record a short run of demo.py and export to MP4)"></video>
+        <video controls preload="metadata" src="./assets/video/gradio_demo.mp4"
+          data-fallback="Missing video: docs/assets/video/gradio_demo.mp4"></video>
         <div class="cap">
-          <strong>Demo video</strong> — Running <code>python demo.py --dataset_dir ...</code> and showing inference +
+          <strong>Demo (Gradio)</strong> — Running <code>python demo.py --dataset_dir ...</code> and showing inference +
           quick accuracy.
-        </div>
-      </div>
-
-      <div class="card" style="padding:14px;">
-        <div class="notice">
-          <strong>How to record the demo video (easy and small):</strong><br />
-          1) Record with OBS (recommended) or any screen recorder.<br />
-          2) Export to MP4.<br />
-          3) If file is large, compress with ffmpeg (Ubuntu):<br />
-          <div class="codebar">
-            <div class="label">ffmpeg compress (recommended)</div>
-            <button class="copybtn" data-copy-target="ffmpeg1">Copy</button>
-          </div>
-          <pre id="ffmpeg1"
-            class="code">ffmpeg -i input.mp4 -vf "scale=1280:-2" -c:v libx264 -crf 28 -preset veryslow -c:a aac -b:a 128k docs/assets/video/demo.mp4</pre>
-          <div class="small">
-            GitHub repoに置くなら、できれば <strong>~50MB以下</strong> を目標にすると運用が楽。
-          </div>
-        </div>
-
-        <hr class="sep" />
-
-        <div class="notice">
-          <strong>Optional: Add extra videos</strong><br />
-          例）<code>docs/assets/video/supplementary_1.mp4</code> を置いたら、<br />
-          <code>index.html</code> の Demo セクションに以下をコピペで追加するだけ：
-          <div class="codebar">
-            <div class="label">Extra video block</div>
-            <button class="copybtn" data-copy-target="extraVideo">Copy</button>
-          </div>
-          <pre id="extraVideo" class="code">&lt;div class="card media"&gt;
-  &lt;video controls preload="metadata" src="./assets/video/supplementary_1.mp4"&gt;&lt;/video&gt;
-  &lt;div class="cap"&gt;&lt;strong&gt;Supplementary video 1&lt;/strong&gt; — description here.&lt;/div&gt;
-&lt;/div&gt;</pre>
         </div>
       </div>
     </div>
