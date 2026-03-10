@@ -14,7 +14,7 @@
       docRoot.setAttribute("data-theme", t);
       localStorage.setItem("predannpp_theme", t);
       themeBtn.setAttribute("aria-label", t === "dark" ? "Switch to light mode" : "Switch to dark mode");
-      themeBtn.textContent = t === "dark" ? "🌙 Dark" : "☀️ Light";
+      themeBtn.textContent = t === "dark" ? "☀️ Light" : "🌙 Dark";
       window.dispatchEvent(new Event("predannpp-theme-changed"));
     }
     applyTheme(docRoot.getAttribute("data-theme") || "dark");
@@ -743,12 +743,15 @@
           throw new Error("Manifest must contain a non-empty tracks array.");
         }
 
-        tracks = manifest.tracks;
+        const initialId = config.initialTrackId || manifest.tracks[0].id;
+        const preferred = manifest.tracks.find(t => t.id === initialId);
+        tracks = preferred
+          ? [preferred, ...manifest.tracks.filter(t => t.id !== initialId)]
+          : manifest.tracks;
         sourceSel.innerHTML = tracks
           .map(t => `<option value="${t.id}">${t.display_title || t.id}</option>`)
           .join("");
 
-        const initialId = config.initialTrackId || tracks[0].id;
         const firstTrack = tracks.find(t => t.id === initialId) || tracks[0];
         sourceSel.value = firstTrack.id;
         await loadTrack(firstTrack);
