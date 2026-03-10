@@ -60,9 +60,6 @@ and are intended for **finetuning and evaluation in EEG-based music recognition*
 | PredANN++ Surprisal | MusicGEN-Surprisal | 16 s | 10k epochs (50% masking) | 3.5k epochs | [Shogo-Noguchi/PredANNpp-Surprisal-ctx16](https://huggingface.co/Shogo-Noguchi/PredANNpp-Surprisal-ctx16) |
 
 >Pretrained models are publicly available on Hugging Face.
-> **Reviewer Note (Temporary)**  
-> For the purpose of peer review, the pretrained checkpoint files are also
-> temporarily available in the local `checkpoints/` directory of this repository.
 
 **Common settings**
 - Random seed: **42**

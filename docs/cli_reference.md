@@ -1,13 +1,16 @@
 # CLI Reference (PredANN++)
 
-This document describes the command-line interface (CLI) of the public PredANN+ repository.
+This document describes the public command-line interface (CLI) of the PredANN++ repository.
 
 **Entry points**
 - Training: `codes_3s/main_3s.py`
 - Evaluation (single + ensemble + McNemar): `codes_3s/analysis/evaluate.py`
 
-> Note: This repository intentionally keeps the CLI small. Some additional arguments may be
-> available via PyTorch Lightning, but the arguments below are the officially supported ones.
+> This file documents only arguments that are actually registered by the public scripts.
+> - For training (`main_3s.py`): all keys loaded from `codes_3s/config/config.yaml` plus flags explicitly added in `codes_3s/main_3s.py`
+> - For evaluation (`evaluate.py`): all keys loaded from `codes_3s/config/config.yaml` plus evaluation-specific flags explicitly added in `codes_3s/analysis/evaluate.py`
+>
+> Undeclared internal references and stale documentation entries are intentionally excluded.
 
 ---
 
@@ -17,7 +20,7 @@ This document describes the command-line interface (CLI) of the public PredANN+ 
 
 - `Finetune`
   - Song ID classification using the encoder-only model.
-  - If `--pretrain_ckpt_path` is `None` / `none`, training starts from scratch (**Fullscratch**).
+  - If `--pretrain_ckpt_path` is `None` or `none`, training starts from scratch (**Fullscratch**).
 - `MuQMultitask`
   - Song ID classification + 50% masked prediction of MuQ tokens (40 ms resolution).
 - `SurpMultitask`
@@ -26,14 +29,14 @@ This document describes the command-line interface (CLI) of the public PredANN+ 
   - Song ID classification + 50% masked prediction of Entropy tokens (20 ms resolution).
 
 **Important**
-- The former `Pretrain` mode has been removed.
-  Use `Finetune` for both “from scratch” and “fine-tuning from a checkpoint”.
+- The former `Pretrain` mode is not part of the public CLI.
+- Use `Finetune` for both training from scratch and checkpoint-based fine-tuning.
 
 ---
 
 ## Dataset Path
 
-To run successfully, you must provide the local NMED-T dataset directory.
+To run successfully, provide the local NMED-T dataset directory.
 
 Recommended:
 - Pass `--dataset_dir <NMEDT_BASE_DIR>`.
@@ -43,95 +46,91 @@ Alternative:
 
 ---
 
-## Full Argument List (main_3s.py)
-
-This list contains:
-- all keys from `codes_3s/config/config.yaml`
-- additional CLI flags explicitly defined in `codes_3s/main_3s.py`
-
-Each option is described in one short line.
+## Full Argument List (Training: `main_3s.py`)
 
 ### Infra / runtime
 
-- `--gpus` (int): number of GPUs (Lightning Trainer flag).
-- `--accelerator` (str): Lightning accelerator (e.g., `dp`, `ddp`, `gpu`, `cpu`).
-- `--workers` (int): DataLoader workers for training/validation.
-- `--dataset_dir` (str): path to `<NMEDT_BASE_DIR>` (directory containing `audio/`, `DS_EEG_pkl/`, etc.).
+- `--gpus` (int): number of GPUs.
+- `--accelerator` (str): accelerator string forwarded to the Lightning trainer (for example `dp`, `ddp`, `gpu`, `cpu`).
+- `--workers` (int): number of DataLoader workers for training and validation.
+- `--dataset_dir` (str): path to `<NMEDT_BASE_DIR>`.
 
 ### Training control
 
-- `--seed` (int): global seed (reproducibility).
+- `--seed` (int): global random seed.
 - `--batch_size` (int): batch size.
-- `--max_epochs` (int): number of epochs to train.
-- `--eval_only` (int): if 1, run validation only.
-- `--train_only` (int): reserved flag (kept for compatibility).
-- `--training_date` (str): run name used for checkpoint/log directories.
+- `--max_epochs` (int): maximum number of training epochs.
+- `--eval_only` (int): if `1`, skip training and run validation only.
+- `--training_date` (str): run name used for checkpoint and logging directories.
 
 ### Data / EEG
 
-- `--dataset` (str): dataset name (default: `preprocessing_eegmusic`).
-- `--eeg_type` (str): EEG type string (e.g., `raw`).
-- `--eeg_normalization` (str): EEG normalization mode (e.g., `MetaAI`).
-- `--clamp_value` (int): clamp value for `MetaAI` normalization.
-- `--eeg_sample_rate` (int): EEG sampling rate (Hz).
-- `--audio_sample_rate` (int): audio sampling rate (Hz).
-- `--eeg_length` (int): EEG clip length in samples (default 375 = 3s at 125 Hz).
-- `--audio_clip_length` (float): audio context length in seconds (used for cropping margins).
-- `--split_seed` (int): random seed used for train/test split.
-- `--class_song_id` (str): list-like string of song IDs (e.g., `[21,22,...,36]`).
-- `--shifting_time` (int): time shift parameter for alignment (in ms-like scale used by code).
+- `--dataset` (str): dataset loader name.
+- `--eeg_normalization` (str): EEG normalization mode.
+- `--eeg_sample_rate` (int): EEG sampling rate in Hz.
+- `--eeg_length` (int): EEG clip length in samples.
+- `--clamp_value` (int): clamp value used by `MetaAI` normalization.
+- `--split_seed` (int): random seed used for the train/test split.
+- `--class_song_id` (str): list-like string of target song IDs.
+- `--shifting_time` (int): alignment shift parameter passed to the dataset loader.
 
 ### Sliding window
 
-- `--window_size` (int): sliding window size for SW_* subsets.
-- `--stride` (int): stride size for SW_* subsets.
-- `--start_position` (int): start position offset inside the extracted window.
+- `--window_size` (int): sliding-window size for `SW_*` subsets.
+- `--stride` (int): sliding-window stride for `SW_*` subsets.
+- `--start_position` (int): start-position offset inside the extracted window.
 
-### Augmentation (EEG augmentation via audiomentations)
+### Augmentation
 
-- `--openmiir_augmentation` (str): `no_augmentation`, `gaussiannoise`, `gain`, `gaussiannoise+gain`.
-- `--max_amplitude` (float): max amplitude for gaussian noise.
-- `--min_amplitude` (float): min amplitude for gaussian noise.
+- `--openmiir_augmentation` (str): legacy-named EEG augmentation selector.
+  - `no_augmentation`: disable augmentation.
+  - `gain`: apply random gain augmentation.
+  - The gaussian-noise variants are not documented as supported public CLI modes in this release because their amplitude controls are not exposed as public CLI arguments.
 
-### Optimization (kept as config fields)
+### Optimization / compatibility fields
 
-- `--optimizer` (str): optimizer name (currently kept for compatibility).
+- `--optimizer` (str): optimizer field loaded from config for compatibility.
 - `--learning_rate` (float): learning rate.
-- `--weight_decay` (float): weight decay.
-- `--alpha` (float): reserved weight parameter.
-- `--supervised` (int): reserved flag.
-- `--loss_function` (str): loss name string (kept for compatibility).
-- `--detach_z_audio` (int): reserved flag.
-- `--weight_r` (float): reserved weight parameter.
-- `--weight_c` (float): reserved weight parameter.
-- `--weight_predann` (float): reserved weight parameter.
-- `--dim_reduction` (int): reserved flag.
-- `--train_test_splitting` (str): reserved split mode string.
+- `--supervised` (int): legacy config field retained for compatibility.
+- `--train_test_splitting` (str): legacy config field retained for compatibility.
 
 ### Mode-related
 
 - `--mode` (str): training mode (`Finetune`, `MuQMultitask`, `SurpMultitask`, `EntropyMultitask`).
-- `--pretrain_ckpt_path` (str): checkpoint path for initializing encoder in `Finetune`.
-- `--finetune_use_cls_token` (int): 1=use CLS token, 0=mean pooling.
-- `--resume_from_checkpoint` (str): Lightning resume checkpoint.
-- `--logger_version` (int): TensorBoard version folder number.
-- `--accumulate_grad_batches` (int): gradient accumulation steps.
+- `--pretrain_ckpt_path` (str): checkpoint path used to initialize the encoder in `Finetune`.
+- `--finetune_use_cls_token` (int): `1` uses the CLS token and `0` uses mean pooling.
+- `--resume_from_checkpoint` (str): Lightning checkpoint path for resuming training.
+- `--logger_version` (int): fixed TensorBoard version directory.
+- `--accumulate_grad_batches` (int): gradient-accumulation steps.
 
-### Experimental newMF (Surprisal/Entropy with 0.1 s stride)
+### Experimental newMF
 
-- `--use_new_mf` (int): 1 enables newMF for Surp/Entropy multitask, 0 uses 30s-chunk features.
-- `--new_mf_context_win` (int): newMF context length (8/16/32 seconds).
+- `--use_new_mf` (int): if `1`, enable experimental 0.1 s-stride Surprisal/Entropy features for `SurpMultitask` and `EntropyMultitask`.
+- `--new_mf_context_win` (int): context window in seconds for experimental newMF features (`8`, `16`, or `32`).
 
 ---
 
-## Evaluation CLI (evaluate.py)
+## Evaluation CLI (`evaluate.py`)
 
-Main arguments:
+`evaluate.py` loads defaults from `codes_3s/config/config.yaml`, then adds the evaluation-specific public arguments below.
+
+### Required I/O
 
 - `--ckpt_dir` (str, required): directory containing checkpoint folders.
 - `--out_dir` (str, required): output directory for cached logits and JSON metrics.
-- `--mode` (str, required): `checkpoint` (infer if cache missing) or `offline` (cache only).
-- `--fullscratch_seeds` (str): comma-separated seeds for Fullscratch.
-- `--multitask_seeds` (str): comma-separated seeds for Multitask→Finetune.
-- `--num_workers` (int): DataLoader workers for evaluation.
-- `--device` (str): `cpu` or `cuda`.
+
+### Model selection
+
+- `--fullscratch_seeds` (str): comma-separated seed list for Fullscratch models.
+- `--multitask_seeds` (str): comma-separated seed list for Multitask→Finetune models.
+
+### Execution mode
+
+- `--mode` (str, required): evaluation execution mode.
+  - `checkpoint`: run inference if cache is missing, otherwise load cache.
+  - `offline`: use cache only.
+
+### Evaluation runtime
+
+- `--num_workers` (int): number of DataLoader workers used for evaluation.
+- `--device` (str): evaluation device (`cpu` or `cuda`).
