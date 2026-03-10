@@ -81,14 +81,118 @@
     return Math.abs(arr[lo - 1] - target) <= Math.abs(arr[lo] - target) ? lo - 1 : lo;
   }
 
+  function normalize01(arr) {
+    if (!arr || arr.length === 0) { return []; }
+    let mn = Infinity;
+    let mx = -Infinity;
+    for (let i = 0; i < arr.length; i++) {
+      const v = Number(arr[i]);
+      if (!Number.isFinite(v)) { continue; }
+      if (v < mn) { mn = v; }
+      if (v > mx) { mx = v; }
+    }
+    if (!Number.isFinite(mn) || !Number.isFinite(mx) || mx <= mn) {
+      return arr.map(() => 0);
+    }
+    const out = new Array(arr.length);
+    const den = mx - mn;
+    for (let i = 0; i < arr.length; i++) {
+      out[i] = clamp((Number(arr[i]) - mn) / den, 0, 1);
+    }
+    return out;
+  }
+
+  async function computeRmsFromAudioUrl(audioUrl, frameLength, hopLength) {
+    const res = await fetch(audioUrl, { cache: "no-store" });
+    if (!res.ok) {
+      throw new Error(`RMS audio fetch failed: HTTP ${res.status}`);
+    }
+    const arrBuf = await res.arrayBuffer();
+    const ACtx = window.AudioContext || window.webkitAudioContext;
+    if (!ACtx) {
+      throw new Error("Web Audio API is not available in this browser.");
+    }
+
+    const ctx = new ACtx();
+    let audioBuf = null;
+    try {
+      audioBuf = await ctx.decodeAudioData(arrBuf.slice(0));
+    } finally {
+      try { await ctx.close(); } catch (_) { }
+    }
+    if (!audioBuf) {
+      throw new Error("Failed to decode audio for RMS.");
+    }
+
+    const sr = Number(audioBuf.sampleRate) || 44100;
+    const C = audioBuf.numberOfChannels || 1;
+    const T = audioBuf.length || 0;
+    const fl = Math.max(1, Math.floor(Number(frameLength) || 2048));
+    const hl = Math.max(1, Math.floor(Number(hopLength) || 512));
+    if (T <= 0) {
+      return { tSec: [], rmsNorm: [], sampleRate: sr, channels: C, frameLength: fl, hopLength: hl };
+    }
+
+    const chData = [];
+    for (let c = 0; c < C; c++) {
+      chData.push(audioBuf.getChannelData(c));
+    }
+
+    function monoAt(i) {
+      let sum = 0;
+      for (let c = 0; c < C; c++) { sum += chData[c][i]; }
+      return sum / C;
+    }
+
+    const eps = 1e-12;
+    let tSec = [];
+    let rms = [];
+    if (T < fl) {
+      let e = 0;
+      for (let i = 0; i < T; i++) {
+        const x = monoAt(i);
+        e += x * x;
+      }
+      const val = Math.sqrt(e / Math.max(1, T) + eps);
+      tSec = [0.0];
+      rms = [val];
+    } else {
+      const nFrames = Math.floor((T - fl) / hl) + 1;
+      tSec = new Array(nFrames);
+      rms = new Array(nFrames);
+      for (let i = 0; i < nFrames; i++) {
+        const s = i * hl;
+        let e = 0;
+        for (let j = 0; j < fl; j++) {
+          const x = monoAt(s + j);
+          e += x * x;
+        }
+        rms[i] = Math.sqrt(e / fl + eps);
+        tSec[i] = s / sr;
+      }
+    }
+
+    return {
+      tSec,
+      rmsNorm: normalize01(rms),
+      sampleRate: sr,
+      channels: C,
+      frameLength: fl,
+      hopLength: hl,
+    };
+  }
+
   // ── Synchronized feature visualization (generic) ───────────────────────────
   // config = {
   //   canvasSel, audioSel, playBtnSel, sourceSel, featSelSel,
+  //   rmsToggleSel,
   //   seekSel, seekLblSel, zoomSel, zoomLblSel, statusSel, attrSel,
   //   manifestUrl,      // path to JSON manifest with track list
   //   initialTrackId,   // optional
   //   mfHz,             // optional, default 50
   //   hardCapSec,       // optional, default 240
+  //   rmsFrameLength,   // optional, default 2048
+  //   rmsHopLength,     // optional, default 512
   // }
   function initSyncViz(config) {
     const canvas = qs(config.canvasSel); if (!canvas) { return; }
@@ -96,6 +200,7 @@
     const playBtn = qs(config.playBtnSel); if (!playBtn) { return; }
     const sourceSel = qs(config.sourceSel); if (!sourceSel) { return; }
     const featSel = qs(config.featSelSel); if (!featSel) { return; }
+    const rmsToggle = config.rmsToggleSel ? qs(config.rmsToggleSel) : null;
     const seekEl = qs(config.seekSel); if (!seekEl) { return; }
     const seekLbl = qs(config.seekLblSel); if (!seekLbl) { return; }
     const zoomEl = qs(config.zoomSel); if (!zoomEl) { return; }
@@ -123,6 +228,11 @@
     let seekTarget = 0;     // preview position while dragging
     let canvasDrag = false;
     let wasPlayingBeforeSeek = false; // was audio playing when drag started?
+    let queuedSeekSec = null;
+    let showRms = rmsToggle ? !!rmsToggle.checked : false;
+    let rmsT = [];
+    let rmsNorm = [];
+    let rmsMeta = null;
 
     // ── Helpers ──────────────────────────────────────────────────────────────
     function getDuration() {
@@ -146,6 +256,46 @@
     function getMaxViewStart() { return Math.max(0, getDuration() - getWinLen()); }
     function centerView(t) { viewStart = clamp(t - getWinLen() * 0.5, 0, getMaxViewStart()); }
 
+    function trySetAudioCurrentTime(t) {
+      try {
+        audio.currentTime = t;
+        return true;
+      } catch (_) {
+        return false;
+      }
+    }
+
+    function seekAudioSafe(t) {
+      const dur = getDuration();
+      if (dur <= 0) { return false; }
+      const target = clamp(t, 0, dur);
+
+      // Always attempt to assign audio.currentTime immediately.
+      // Browsers update the currentTime property synchronously (so updateUI()
+      // reads the intended position right away and the UI does NOT snap back).
+      // The actual physical seek may complete asynchronously — that is fine.
+      // We only fall back to the queue when the assignment itself throws
+      // (extremely rare; e.g. audio element not yet attached to DOM).
+      if (trySetAudioCurrentTime(target)) {
+        queuedSeekSec = null;
+        return true;
+      }
+
+      // Fallback: queue and retry on loadedmetadata / canplay.
+      queuedSeekSec = target;
+      return false;
+    }
+
+    function flushQueuedSeek() {
+      if (queuedSeekSec == null) { return; }
+      const dur = getDuration();
+      if (dur <= 0) { return; }
+      const target = clamp(Number(queuedSeekSec) || 0, 0, dur);
+      if (trySetAudioCurrentTime(target)) {
+        queuedSeekSec = null;
+      }
+    }
+
     function renderAttribution(track) {
       if (!attrEl || !track) { return; }
       const sourceUrl = track.source_url || "";
@@ -165,7 +315,7 @@
       const dur = getDuration();
       if (dur <= 0) { return; }
       t = clamp(t, 0, dur);
-      audio.currentTime = t;
+      seekAudioSafe(t);
       centerView(t);
       updateUI();
       draw();
@@ -222,6 +372,20 @@
       return out;
     }
 
+    function buildRmsSeries() {
+      if (!showRms) { return []; }
+      if (!rmsT || !rmsNorm || rmsT.length === 0 || rmsNorm.length === 0) { return []; }
+      const winLen = getWinLen();
+      const N = Math.max(2, Math.round(winLen * MF_HZ));
+      const out = new Array(N);
+      for (let i = 0; i < N; i++) {
+        const t = viewStart + i / MF_HZ;
+        const idx = nearestIndex(rmsT, t);
+        out[i] = Number(rmsNorm[idx] ?? 0);
+      }
+      return out;
+    }
+
     function draw() {
       const W = canvas.clientWidth, H = canvas.clientHeight;
       if (W <= 0 || H <= 0) { return; }
@@ -231,6 +395,7 @@
       const borderColor = (rs.getPropertyValue("--line2") || "rgba(255,255,255,0.18)").trim();
       const gridColor = (rs.getPropertyValue("--line") || "rgba(255,255,255,0.12)").trim();
       const axisTextColor = (rs.getPropertyValue("--muted") || "rgba(255,255,255,.85)").trim();
+      const rmsColor = (rs.getPropertyValue("--good") || "#27d67b").trim();
 
       const PL = 46, PR = 10, PT = 14, PB = 28;
       const pw = Math.max(10, W - PL - PR);
@@ -265,6 +430,19 @@
         ctx2d.stroke();
       }
 
+      const rmsSeries = buildRmsSeries();
+      if (rmsSeries.length >= 2) {
+        ctx2d.strokeStyle = rmsColor;
+        ctx2d.lineWidth = 1.1;
+        ctx2d.beginPath();
+        for (let i = 0; i < rmsSeries.length; i++) {
+          const x = PL + (i / (rmsSeries.length - 1)) * pw;
+          const y = PT + (1 - clamp(rmsSeries[i], 0, 1)) * ph;
+          i === 0 ? ctx2d.moveTo(x, y) : ctx2d.lineTo(x, y);
+        }
+        ctx2d.stroke();
+      }
+
       // Y-axis labels
       ctx2d.fillStyle = axisTextColor;
       ctx2d.font = "12px sans-serif";
@@ -272,8 +450,22 @@
       ctx2d.fillText("64", 18, PT + ph * 0.5 + 4);
       ctx2d.fillText("0", 26, PT + ph + 4);
 
+      // Legend (outside the plot area, above top border)
+      ctx2d.font = "12px sans-serif";
+      const fxColor = feature === "ent"
+        ? (rs.getPropertyValue("--accent2") || "#25d3ff").trim()
+        : (rs.getPropertyValue("--accent") || "#7c5cff").trim();
+      const legendY = Math.max(10, PT - 4);
+      ctx2d.fillStyle = fxColor;
+      ctx2d.fillText(feature === "ent" ? "Entropy" : "Surprisal", PL + 4, legendY);
+      if (rmsSeries.length >= 2) {
+        ctx2d.fillStyle = rmsColor;
+        ctx2d.fillText("RMS (aux)", PL + 96, legendY);
+      }
+
       // X-axis time labels
       const winLen = getWinLen();
+      ctx2d.fillStyle = axisTextColor;
       ctx2d.fillText(`${viewStart.toFixed(1)}s`, PL, H - 8);
       ctx2d.fillText(`${(viewStart + winLen).toFixed(1)}s`, PL + pw - 42, H - 8);
 
@@ -320,6 +512,13 @@
       draw();
     });
 
+    if (rmsToggle) {
+      rmsToggle.addEventListener("change", () => {
+        showRms = !!rmsToggle.checked;
+        draw();
+      });
+    }
+
     // Source select
     sourceSel.addEventListener("change", () => {
       const next = tracks.find(t => t.id === sourceSel.value);
@@ -356,6 +555,7 @@
     audio.addEventListener("pause", () => { stopAnim(); });
     audio.addEventListener("ended", () => { stopAnim(); });
     audio.addEventListener("timeupdate", () => {
+      flushQueuedSeek();
       const dur = getDuration();
       if (dur > 0 && audio.currentTime >= dur) {
         audio.currentTime = dur;
@@ -363,7 +563,14 @@
       }
       if (!isSeeking) { updateUI(); draw(); }
     });
-    audio.addEventListener("loadedmetadata", () => { updateUI(); draw(); });
+    audio.addEventListener("loadedmetadata", () => {
+      flushQueuedSeek();
+      updateUI();
+      draw();
+    });
+    audio.addEventListener("canplay", () => {
+      flushQueuedSeek();
+    });
 
     // ── Canvas: drag / click to seek ─────────────────────────────────────────
     function canvasXToTime(ev) {
@@ -476,16 +683,22 @@
         audio.pause();
       }
       audio.currentTime = 0;
+      queuedSeekSec = null;
       audio.src = track.audio_url;
       audio.load();
 
+      rmsT = [];
+      rmsNorm = [];
+      rmsMeta = null;
+
       try {
-        const r = await fetch(track.data_url, { cache: "no-store" });
-        if (!r.ok) { throw new Error(`HTTP ${r.status}`); }
-        const json = await r.json();
+        const dataResp = await fetch(track.data_url, { cache: "no-store" });
+        if (!dataResp.ok) { throw new Error(`HTTP ${dataResp.status}`); }
+        const json = await dataResp.json();
         if (!Array.isArray(json.start_s) || !Array.isArray(json.surp_q) || !Array.isArray(json.ent_q)) {
           throw new Error("Invalid JSON schema. Expected start_s, surp_q, ent_q arrays.");
         }
+
         data = json;
         dataEndSec = computeDataEndSec(json);
         playBtn.disabled = false;
@@ -493,7 +706,26 @@
         updateUI();
         draw();
         const shownDur = getDuration() || dataEndSec;
-        statusEl.textContent = `${track.display_title || track.id} (0:00 – ${fmt(shownDur)}). Press ▶ to play.`;
+
+        statusEl.textContent = `${track.display_title || track.id} (0:00 – ${fmt(shownDur)}). Press ▶ to play. RMS loading...`;
+
+        computeRmsFromAudioUrl(
+          track.audio_url,
+          Number(config.rmsFrameLength) || 2048,
+          Number(config.rmsHopLength) || 512,
+        ).then((rmsResult) => {
+          if (rmsResult && Array.isArray(rmsResult.tSec) && Array.isArray(rmsResult.rmsNorm)) {
+            rmsT = rmsResult.tSec;
+            rmsNorm = rmsResult.rmsNorm;
+            rmsMeta = rmsResult;
+            draw();
+            const durNow = getDuration() || dataEndSec;
+            statusEl.textContent = `${track.display_title || track.id} (0:00 – ${fmt(durNow)}). Press ▶ to play. RMS ready (${rmsMeta.sampleRate} Hz, frame=${rmsMeta.frameLength}, hop=${rmsMeta.hopLength}).`;
+          }
+        }).catch(() => {
+          const durNow = getDuration() || dataEndSec;
+          statusEl.textContent = `${track.display_title || track.id} (0:00 – ${fmt(durNow)}). Press ▶ to play. RMS unavailable (audio decode failed).`;
+        });
       } catch (err) {
         statusEl.textContent = `Failed to load track data: ${err.message}`;
       }
@@ -538,6 +770,7 @@
     playBtnSel: "#syncPlayPause",
     sourceSel: "#syncSourceSelect",
     featSelSel: "#syncFeatureSelect",
+    rmsToggleSel: "#syncShowRms",
     seekSel: "#syncSeek",
     seekLblSel: "#syncSeekLabel",
     zoomSel: "#syncZoomPercent",
@@ -547,5 +780,7 @@
     manifestUrl: "./assets/data/manifest.json",
     initialTrackId: "stickybee_josh_woodward",
     hardCapSec: 240,
+    rmsFrameLength: 2048,
+    rmsHopLength: 512,
   });
 })();
