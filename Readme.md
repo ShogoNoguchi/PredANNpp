@@ -56,6 +56,7 @@ and are intended for **finetuning and evaluation in EEG-based music recognition*
 
 | Model | Target Representation | Context | Pretraining | Finetuning | Hugging Face🤗 |
 |------|----------------------|---------|-------------|------------|--------------|
+| PredANN++ Acoustic | MuQ-Embedding | 16 s | 10k epochs (50% masking) | 3.5k epochs | [Shogo-Noguchi/PredANNpp-Acoustic](https://huggingface.co/Shogo-Noguchi/PredANNpp-Acoustic) |
 | PredANN++ Entropy | MusicGEN-Entropy | 16 s | 10k epochs (50% masking) | 3.5k epochs | [Shogo-Noguchi/PredANNpp-Entropy-ctx16](https://huggingface.co/Shogo-Noguchi/PredANNpp-Entropy-ctx16) |
 | PredANN++ Surprisal | MusicGEN-Surprisal | 16 s | 10k epochs (50% masking) | 3.5k epochs | [Shogo-Noguchi/PredANNpp-Surprisal-ctx16](https://huggingface.co/Shogo-Noguchi/PredANNpp-Surprisal-ctx16) |
 

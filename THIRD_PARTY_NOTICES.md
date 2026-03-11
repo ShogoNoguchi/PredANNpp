@@ -54,12 +54,17 @@ Repositories / model pages:
 We optionally use MuQ for extracting acoustic embeddings.
 
 OpenMuQ checkpoint license information (Hugging Face model card):
-- Code: **MIT**
-- Model weights: **CC-BY-NC 4.0** :contentReference[oaicite:6]{index=6}
+- Code: MIT
+- Model weights: CC-BY-NC 4.0
 
-Repository / model pages:
+IMPORTANT:
+Because MuQ embeddings are computed using MuQ model weights (CC-BY-NC 4.0),
+downstream artifacts trained on these embeddings may inherit non-commercial restrictions.
+Please verify your intended usage and comply with all applicable licenses.
+
+Repositories / model pages:
 - MuQ repository: https://github.com/tencent-ailab/MuQ/tree/main
-- OpenMuQ checkpoint: https://huggingface.co/OpenMuQ/MuQ-large-msd-iter :contentReference[oaicite:7]{index=7}
+- OpenMuQ checkpoint: https://huggingface.co/OpenMuQ/MuQ-large-msd-iter
 
 ---
 
