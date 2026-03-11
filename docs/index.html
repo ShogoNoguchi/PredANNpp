@@ -264,7 +264,6 @@
         <a href="#syncviz">Visualization</a>
         <a href="#demo">Demo</a>
         <a href="#checkpoints">Checkpoints</a>
-        <a href="#dataset">Dataset</a>
         <a href="#cite">Cite</a>
       </div>
 
@@ -458,6 +457,15 @@
       </div>
     </div>
 
+    <p class="small" style="margin-top:12px;text-align:center;">
+      Experiments were conducted on the
+      <a href="https://github.com/ShogoNoguchi/PredANNpp#dataset"
+         target="_blank"
+         rel="noopener">
+        NMED-T dataset
+      </a>.
+    </p>
+
     <div style="max-width:1200px;margin:20px auto 0;">
       <div class="card media" style="margin-bottom:30px;">
         <img class="zoomable" src="./assets/img/figure3_single_model_comparison.png" alt="Single model comparison"
@@ -592,7 +600,6 @@
   <!-- CHECKPOINTS -->
   <div id="checkpoints" class="container section anchor">
     <h2 class="section-title-gradient">Pretrained Checkpoints</h2>
-    <p class="section-intro">Released checkpoints for finetuning / evaluation (Song ID).</p>
 
     <div class="card" style="padding:14px;">
       <div class="table-wrap">
@@ -656,49 +663,6 @@
     </div>
   </div>
 
-  <!-- DATASET -->
-  <div id="dataset" class="container section anchor">
-    <h2 class="section-title-gradient">Dataset</h2>
-    <p class="section-intro">
-      This work uses <strong>NMED-T</strong> (Naturalistic Music EEG Dataset – Tempo).
-      The repository does not include EEG / audio files. Please download the dataset from Stanford Digital Repository.
-    </p>
-
-    <div class="card" style="padding:14px;">
-      <div class="notice">
-        <strong>Dataset link:</strong><br />
-        NMED-T (Stanford Digital Repository): <a href="https://purl.stanford.edu/jn859kj8079" target="_blank"
-          rel="noopener">https://purl.stanford.edu/jn859kj8079</a>
-      </div>
-
-      <hr class="sep" />
-
-      <h3 style="margin:0 0 10px; font-size:16px;">Expected directory structure</h3>
-      <div class="codebar">
-        <div class="label">NMED-T base dir</div>
-        <button class="copybtn" data-copy-target="dsTree">Copy</button>
-      </div>
-      <pre id="dsTree" class="code">NMED-T_dataset/
-├── audio/
-│   ├── 21.wav
-│   ├── 22.wav
-│   └── ...
-├── DS_EEG_pkl/
-│   ├── 2_21_1.pkl
-│   ├── 2_22_1.pkl
-│   └── ...
-├── NoClip_Discreat_K1Surprisal/
-├── Entropy_k1_Q128/
-├── MuQ_Discreat_K128/
-├── surprisal_k1/
-├── MuQ_Continuous_embedding/
-└── entropy_k1/</pre>
-
-      <div class="small">
-        Preprocessing scripts: <code>scripts/data_prep/</code> (see your README).
-      </div>
-    </div>
-  </div>
 
   <!-- CITE -->
   <div id="cite" class="container section anchor">
