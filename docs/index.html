@@ -18,7 +18,8 @@
   <meta property="og:image" content="https://shogonoguchi.github.io/PredANNpp/assets/img/concept.png" />
   <meta property="og:url" content="https://shogonoguchi.github.io/PredANNpp/" />
 
-  <link rel="stylesheet" href="./assets/style.css?v=20260305m" />
+  <link rel="canonical" href="https://shogonoguchi.github.io/PredANNpp/" />
+  <link rel="stylesheet" href="./assets/style.css?v=20260311a" />
 
   <style>
     .hero-paper {
@@ -186,6 +187,42 @@
       margin-top: 10px;
     }
 
+    .zoomable {
+      cursor: zoom-in;
+      transition: transform 0.18s ease, filter 0.18s ease;
+    }
+
+    .zoomable:hover {
+      transform: scale(1.01);
+      filter: brightness(1.02);
+    }
+
+    .zoomable:focus {
+      outline: 2px solid rgba(105, 168, 255, 0.95);
+      outline-offset: 4px;
+    }
+
+    .lightbox-overlay {
+      position: fixed;
+      inset: 0;
+      padding: 24px;
+      background: rgba(0, 0, 0, 0.82);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      cursor: zoom-out;
+    }
+
+    .lightbox-overlay img {
+      max-width: 92vw;
+      max-height: 92vh;
+      display: block;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.7);
+      border-radius: 10px;
+      cursor: auto;
+    }
+
     @media (max-width: 900px) {
       .hero-author {
         margin-left: 8px;
@@ -200,6 +237,10 @@
       .hero-notes span,
       .hero-affiliation {
         white-space: normal;
+      }
+
+      .lightbox-overlay {
+        padding: 12px;
       }
     }
   </style>
@@ -264,8 +305,6 @@
             rel="noopener">GitHub</a>
           <a class="hero-link-btn" href="https://huggingface.co/collections/Shogo-Noguchi/predann-models"
             target="_blank" rel="noopener">Hugging Face</a>
-          <a class="hero-link-btn" href="https://shogonoguchi.github.io/PredANNpp/" target="_blank"
-            rel="noopener">Pages</a>
           <a class="hero-link-btn" href="https://arxiv.org/abs/2603.03190" target="_blank"
             rel="noopener">arXiv</a>
         </div>
@@ -278,7 +317,7 @@
   <!-- CONCEPT -->
   <div class="container" style="margin-top:28px;">
     <div class="card media concept-card">
-      <img src="./assets/img/concept.png" alt="Conceptual overview of PredANN++" />
+      <img class="zoomable" src="./assets/img/concept.png" alt="Conceptual overview of PredANN++" />
       <div class="cap" style="padding:16px 18px 18px;">
         <strong>Concept.</strong>
         PredANN++ aligns EEG with neurobiologically distinct teacher signals—acoustic structure and predictive
@@ -317,9 +356,10 @@
   <div class="container section">
     <h2 class="section-title-gradient">Method Overview</h2>
 
-    <div class="grid-2 method-grid">
-      <div class="card media">
-        <img src="./assets/img/Neural_Network_Architecture.png" alt="PredANN++ neural network architecture"
+    <div class="method-grid">
+      <div class="card media" style="max-width:1120px;margin:0 auto 28px;">
+        <img class="zoomable" src="./assets/img/Neural_Network_Architecture.png"
+          alt="PredANN++ neural network architecture"
           data-fallback="Missing image: docs/assets/img/Neural_Network_Architecture.png  (copy from your figs/Neural_Network_Architecture.png)" />
         <div class="cap">
           <strong>Architecture.</strong>
@@ -328,8 +368,8 @@
         </div>
       </div>
 
-      <div class="card media">
-        <img src="./assets/img/data_prep.png" alt="ANN representation calculation and discretization"
+      <div class="card media" style="max-width:1120px;margin:0 auto 28px;">
+        <img class="zoomable" src="./assets/img/data_prep.png" alt="ANN representation calculation and discretization"
           data-fallback="Missing image: docs/assets/img/data_prep.png  (copy from your figs/data_prep.png)" />
         <div class="cap">
           <strong>Teacher construction.</strong>
@@ -418,9 +458,9 @@
       </div>
     </div>
 
-    <div class="grid-2" style="margin-top:16px;">
-      <div class="card media">
-        <img src="./assets/img/figure3_single_model_comparison.png" alt="Single model comparison"
+    <div style="max-width:1200px;margin:20px auto 0;">
+      <div class="card media" style="margin-bottom:30px;">
+        <img class="zoomable" src="./assets/img/figure3_single_model_comparison.png" alt="Single model comparison"
           data-fallback="Missing image: docs/assets/img/figure3_single_model_comparison.png  (export from your paper: single model comparison figure)" />
         <div class="cap">
           <strong>Teacher choice matters.</strong>
@@ -428,28 +468,9 @@
         </div>
       </div>
 
-      <div class="card media">
-        <img src="./assets/img/figure4_ensemble_effectiveness.png" alt="Ensemble effectiveness"
-          data-fallback="Missing image: docs/assets/img/figure4_ensemble_effectiveness.png  (export from your paper: ensemble effectiveness figure)" />
-        <div class="cap">
-          <strong>Complementary teachers help.</strong>
-          Cross-representation ensembling improves over any single model, with Acoustic + Surprisal + Entropy reaching
-          the best accuracy.
-        </div>
-      </div>
-
-      <div class="card media">
-        <img src="./assets/img/figure2_context_optimization.png" alt="Context window optimization"
-          data-fallback="Missing image: docs/assets/img/figure2_context_optimization.png" />
-        <div class="cap">
-          <strong>16 s is the sweet spot.</strong>
-          Predictive targets are most effective at a 16-second context window, motivating the final Surprisal /
-          Entropy setting.
-        </div>
-      </div>
-
-      <div class="card media">
-        <img src="./assets/img/figure6_seed_vs_finetune.png" alt="Representation ensemble vs seed ensemble"
+      <div class="card media" style="margin-bottom:30px;">
+        <img class="zoomable" src="./assets/img/figure6_seed_vs_finetune.png"
+          alt="Representation ensemble vs seed ensemble"
           data-fallback="Missing image: docs/assets/img/figure6_seed_vs_finetune.png" />
         <div class="cap">
           <strong>Diversity should be representational, not random.</strong>
@@ -552,7 +573,7 @@
     </p>
 
     <div>
-      <div class="card media">
+      <div class="card media" style="margin-bottom:30px;">
         <video controls preload="metadata" src="./assets/video/gradio_demo.mp4"
           data-fallback="Missing video: docs/assets/video/gradio_demo.mp4"></video>
       </div>
@@ -682,6 +703,80 @@ python demo.py --dataset_dir /path/to/NMED-T_dataset</pre>
   </div>
 
   <script src="./assets/site.js?v=20260306r"></script>
+  <script>
+    (function () {
+      const zoomableImages = document.querySelectorAll(".zoomable");
+      let overlay = null;
+      let lastFocusedElement = null;
+
+      function closeLightbox() {
+        if (overlay) {
+          overlay.remove();
+          overlay = null;
+          document.body.style.overflow = "";
+          document.removeEventListener("keydown", handleOverlayKeydown);
+
+          if (lastFocusedElement) {
+            lastFocusedElement.focus();
+            lastFocusedElement = null;
+          }
+        }
+      }
+
+      function handleOverlayKeydown(event) {
+        if (event.key === "Escape") {
+          closeLightbox();
+        }
+      }
+
+      function openLightbox(src, altText) {
+        closeLightbox();
+
+        lastFocusedElement = document.activeElement;
+
+        overlay = document.createElement("div");
+        overlay.className = "lightbox-overlay";
+        overlay.setAttribute("role", "dialog");
+        overlay.setAttribute("aria-modal", "true");
+        overlay.setAttribute("aria-label", altText || "Expanded figure");
+
+        const overlayImage = document.createElement("img");
+        overlayImage.src = src;
+        overlayImage.alt = altText || "Expanded figure";
+
+        overlay.appendChild(overlayImage);
+
+        overlay.addEventListener("click", function () {
+          closeLightbox();
+        });
+
+        overlayImage.addEventListener("click", function (event) {
+          event.stopPropagation();
+        });
+
+        document.body.appendChild(overlay);
+        document.body.style.overflow = "hidden";
+        document.addEventListener("keydown", handleOverlayKeydown);
+      }
+
+      zoomableImages.forEach(function (img) {
+        img.setAttribute("tabindex", "0");
+        img.setAttribute("role", "button");
+        img.setAttribute("aria-label", (img.alt || "Figure") + " (click to expand)");
+
+        img.addEventListener("click", function () {
+          openLightbox(img.src, img.alt);
+        });
+
+        img.addEventListener("keydown", function (event) {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            openLightbox(img.src, img.alt);
+          }
+        });
+      });
+    })();
+  </script>
 </body>
 
 </html>
