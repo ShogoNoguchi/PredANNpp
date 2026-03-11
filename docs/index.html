@@ -15,11 +15,9 @@
   <meta property="og:description"
     content="EEG-to-music representation pretraining via multitask masked prediction (MuQ / Surprisal / Entropy) for Song ID classification." />
   <meta property="og:type" content="website" />
-  <!-- Optional: set when you add an image -->
-  <meta property="og:image"
-    content="https://shogonoguchi.github.io/MusicFeaturePred_Surp_Ent_MuQ/assets/img/concept.png" />
+  <meta property="og:image" content="https://shogonoguchi.github.io/PredANNpp/assets/img/concept.png" />
 
-  <link rel="stylesheet" href="./assets/style.css?v=20260305m" />
+  <link rel="stylesheet" href="./assets/style.css?v=20260311a" />
 </head>
 
 <body>
@@ -35,13 +33,13 @@
       </a>
 
       <div class="nav-links" aria-label="Site navigation">
-        <a href="#overview">Overview</a>
+        <a href="#abstract">Abstract</a>
         <a href="#results">Results</a>
         <a href="#syncviz">Surp/Ent Visualization</a>
         <a href="#demo">Demo</a>
         <a href="#checkpoints">Checkpoints</a>
         <a href="#dataset">Dataset</a>
-        <a href="#authors">Authors</a>
+        <a href="#cite">Cite</a>
       </div>
 
       <div class="nav-actions">
@@ -52,70 +50,64 @@
 
   <!-- HERO -->
   <div class="container hero">
-    <div class="hero-grid" style="grid-template-columns: 1fr;">
-      <div class="card hero-main">
-        <h1 class="h-title">Expectation and Acoustic Neural Network Representations Enhance Music Identification from
-          Brain Activity</h1>
-        <p class="h-sub">
-          PredANN++ pretrains an EEG encoder by predicting discretized teacher representations from audio:
-          <strong>Acoustic (MuQ)</strong> and <strong>Expectation (MusicGen-derived Surprisal / Entropy)</strong>,
-          using multitask learning with <strong>50% masking</strong>. The learned representations improve EEG-based Song
-          ID classification and
-          provide complementary gains when ensembled.
-        </p>
+    <section class="paper-hero" aria-labelledby="paper-title">
+      <h1 id="paper-title" class="paper-title">
+        Expectation and Acoustic Neural Network Representations Enhance Music Identification from Brain Activity
+      </h1>
 
-        <div class="badges" aria-label="Quick links">
-          <!-- IMPORTANT: Replace the GitHub repo URL if your repository name differs -->
-          <a class="btn" href="https://github.com/ShogoNoguchi/MusicFeaturePred_Surp_Ent_MuQ" target="_blank"
-            rel="noopener">GitHub</a>
+      <p class="paper-authors">
+        <strong>Shogo Noguchi</strong><sup>1,*,a</sup>,
+        <strong>Taketo Akama</strong><sup>1,*</sup>,
+        <strong>Tai Nakamura</strong><sup>1,a</sup>,
+        <strong>Shun Minamikawa</strong><sup>1</sup>,
+        <strong>Natalia Polouliakh</strong><sup>1</sup>
+      </p>
 
-          <a class="btn" href="https://huggingface.co/Shogo-Noguchi/PredANNpp-Entropy-ctx16" target="_blank"
-            rel="noopener">Hugging Face (Entropy)</a>
-          <a class="btn" href="https://huggingface.co/Shogo-Noguchi/PredANNpp-Surprisal-ctx16" target="_blank"
-            rel="noopener">Hugging Face (Surprisal)</a>
+      <p class="paper-affiliations">
+        <span><sup>1</sup>Sony Computer Science Laboratories, Inc., Tokyo, Japan</span>
+      </p>
 
-          <a class="btn" href="https://arxiv.org/abs/2603.03190" target="_blank" rel="noopener">arXiv</a>
+      <p class="paper-notes">
+        <span><sup>*</sup>Equal contribution; corresponding author:
+          <a href="mailto:noguchishogo1@gmail.com">noguchishogo1@gmail.com</a></span>
+        <span><sup>a</sup>Work conducted while serving as a research assistant</span>
+      </p>
 
-          <!-- Optional: Paper PDF -->
-          <a class="btn disabled" data-soon="true" aria-disabled="true" href="#">Paper PDF (Coming Soon)</a>
-        </div>
+      <div class="hero-links" aria-label="Quick links">
+        <a class="hero-link" href="https://github.com/ShogoNoguchi/PredANNpp" target="_blank" rel="noopener">GitHub</a>
+        <a class="hero-link" href="https://huggingface.co/collections/Shogo-Noguchi/predann-models" target="_blank"
+          rel="noopener">Hugging Face</a>
+        <a class="hero-link" href="https://shogonoguchi.github.io/PredANNpp/" target="_blank"
+          rel="noopener">Pages</a>
+        <a class="hero-link" href="https://arxiv.org/abs/2603.03190" target="_blank" rel="noopener">arXiv</a>
       </div>
-    </div>
-  </div>
-  <!-- CONCEPT TEASER (Main claim figure) -->
-  <div class="container" style="margin-top:40px;">
-    <div class="card media" style="padding:0; overflow:hidden;">
-      <img src="./assets/img/concept.png" alt="Conceptual overview of PredANN++" style="width:100%; display:block;" />
-    </div>
 
-    <div class="notice" style="margin-top:18px; font-size:16px;">
-      <strong>Main Claim.</strong>
-      EEG representation learning should be guided by neurobiologically distinct teacher representations
-      (acoustic vs expectation), not merely random initialization diversity.
-    </div>
+      <p class="paper-quote"><em>EEG representation learning should be guided by neural encoding.</em></p>
+
+      <div class="paper-concept card media">
+        <img src="./assets/img/concept.png" alt="Conceptual overview of PredANN++"
+          data-fallback="Missing image: docs/assets/img/concept.png" />
+      </div>
+    </section>
   </div>
-  <!-- OVERVIEW / ABSTRACT -->
-  <div id="overview" class="container section anchor">
-    <h2>Overview (Abstract)</h2>
+
+  <!-- ABSTRACT -->
+  <div id="abstract" class="container section anchor">
+    <h2>Abstract</h2>
     <div class="card" style="padding:18px;">
       <p style="margin:0;">
         During music listening, cortical activity encodes both acoustic and expectation-related information. Prior work
         has shown that ANN representations resemble cortical representations and can serve as supervisory signals for
-        EEG
-        recognition. Here we show that distinguishing acoustic and expectation-related ANN representations as teacher
-        targets
-        improves EEG-based music identification. Models pretrained to predict either representation outperform
-        non-pretrained
-        baselines, and combining them yields complementary gains that exceed strong seed ensembles formed by varying
-        random initializations. These findings show that teacher representation type shapes downstream performance and
-        that representation
-        learning can be guided by neural encoding. This work points toward advances in predictive music cognition and
-        neural decoding. Our expectation representation, computed directly from raw signals without manual labels,
-        reflects predictive
-        structure beyond onset or pitch, enabling investigation of multilayer predictive encoding across diverse
-        stimuli. Its scalability to large, diverse datasets further suggests potential for developing general-purpose
-        EEG models
-        grounded in cortical encoding principles.
+        EEG recognition. Here we show that distinguishing acoustic and expectation-related ANN representations as
+        teacher targets improves EEG-based music identification. Models pretrained to predict either representation
+        outperform non-pretrained baselines, and combining them yields complementary gains that exceed strong seed
+        ensembles formed by varying random initializations. These findings show that teacher representation type shapes
+        downstream performance and that representation learning can be guided by neural encoding. This work points
+        toward advances in predictive music cognition and neural decoding. Our expectation representation, computed
+        directly from raw signals without manual labels, reflects predictive structure beyond onset or pitch, enabling
+        investigation of multilayer predictive encoding across diverse stimuli. Its scalability to large, diverse
+        datasets further suggests potential for developing general-purpose EEG models grounded in cortical encoding
+        principles.
       </p>
     </div>
   </div>
@@ -136,8 +128,8 @@
         <img src="./assets/img/data_prep.png" alt="ANN representation calculation and discretization"
           data-fallback="Missing image: docs/assets/img/data_prep.png  (copy from your figs/data_prep.png)" />
         <div class="cap">
-          <strong>Teacher representations</strong> — MuQ acoustic embeddings (40ms) and MusicGen-based Surprisal/Entropy
-          (20ms), discretized to 128 levels.
+          <strong>Teacher representations</strong> — MuQ acoustic embeddings (40ms) and MusicGen-based
+          Surprisal/Entropy (20ms), discretized to 128 levels.
         </div>
       </div>
     </div>
@@ -453,25 +445,6 @@ python demo.py --dataset_dir /path/to/NMED-T_dataset</pre>
       <div class="small">
         Preprocessing scripts: <code>scripts/data_prep/</code> (see your README).
       </div>
-    </div>
-  </div>
-
-  <!-- AUTHORS -->
-  <div id="authors" class="container section anchor">
-    <h2>Authors</h2>
-    <div class="card" style="padding:18px;">
-      <p style="margin:0 0 10px;">
-        <strong>Shogo Noguchi</strong><sup>1,*,a</sup>,
-        <strong>Taketo Akama</strong><sup>1,*</sup>,
-        <strong>Tai Nakamura</strong><sup>1,a</sup>,
-        <strong>Shun Minamikawa</strong><sup>1</sup>,
-        <strong>Natalia Polouliakh</strong><sup>1</sup>
-      </p>
-      <p style="margin:0;">
-        <sup>1</sup>Sony Computer Science Laboratories, Inc, Tokyo, Japan<br />
-        <sup>*</sup>Equal contribution, corresponding authors: noguchishogo1@gmail.com<br />
-        <sup>a</sup>Work conducted when working as a research assistant
-      </p>
     </div>
   </div>
 
