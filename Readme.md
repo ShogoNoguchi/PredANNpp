@@ -14,7 +14,7 @@
 The model learns EEG representations by predicting music-derived neural network features (Acoustic / Surprisal / Entropy) computed from the corresponding audio stimulus.  
 By aligning EEG signals with acoustic and expectation-related teacher representations, PredANN++ enhances downstream EEG-based song identification performance.
 
-> 🌐 **Project Page**: Result summary, synchronized Surprisal/Entropy visualizations, and Gradio demo walkthrough&nbsp;/ video are available at **[shogonoguchi.github.io/PredANNpp](https://shogonoguchi.github.io/PredANNpp/)**.
+> **Project Page**: Result summary, synchronized Surprisal/Entropy visualizations, and Gradio demo walkthrough&nbsp;/ video are available at **[shogonoguchi.github.io/PredANNpp](https://shogonoguchi.github.io/PredANNpp/)**.
 
 ## Neural Network Architecture
 
