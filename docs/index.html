@@ -157,6 +157,90 @@
       text-align: center;
     }
 
+    .section-copy-left {
+      max-width: 980px;
+      margin: 0 auto 10px;
+      text-align: left;
+    }
+
+    .section-intro.section-copy-left {
+      margin-bottom: 18px;
+    }
+
+    .note-toggle {
+      max-width: 100%;
+      margin: 0 0 0;
+      border: 1px solid var(--line, rgba(234, 240, 255, .12));
+      border-radius: 10px;
+      padding: 0;
+      background: rgba(255, 255, 255, .03);
+      font-size: 14px;
+      color: var(--muted, #b7c3ff);
+    }
+
+    .note-toggle summary {
+      cursor: pointer;
+      padding: 10px 14px;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--muted2, #93a6ff);
+      list-style: none;
+      user-select: none;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.15s;
+    }
+
+    .note-toggle summary:hover {
+      background: rgba(255, 255, 255, .06);
+    }
+
+    .note-toggle summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .note-toggle summary::before {
+      content: '▶';
+      font-size: 10px;
+      transition: transform 0.2s;
+      color: var(--muted2, #93a6ff);
+      flex-shrink: 0;
+    }
+
+    .note-toggle[open] summary::before {
+      transform: rotate(90deg);
+    }
+
+    .note-toggle summary .toggle-hint {
+      margin-left: auto;
+      font-size: 11px;
+      font-weight: 400;
+      opacity: 0.55;
+      white-space: nowrap;
+    }
+
+    .note-toggle[open] summary .toggle-hint {
+      display: none;
+    }
+
+    .note-toggle[open] summary {
+      border-bottom: 1px solid var(--line, rgba(234, 240, 255, .12));
+      border-radius: 10px 10px 0 0;
+    }
+
+    .note-toggle p {
+      margin: 0;
+      padding: 12px 16px;
+      line-height: 1.7;
+      color: var(--muted, #b7c3ff);
+    }
+
+    [data-theme="light"] .note-toggle {
+      background: rgba(0, 0, 0, .03);
+    }
+
     .abstract-card {
       max-width: 980px;
       margin: 0 auto;
@@ -304,8 +388,7 @@
             rel="noopener">GitHub</a>
           <a class="hero-link-btn" href="https://huggingface.co/collections/Shogo-Noguchi/predann-models"
             target="_blank" rel="noopener">Hugging Face</a>
-          <a class="hero-link-btn" href="https://arxiv.org/abs/2603.03190" target="_blank"
-            rel="noopener">arXiv</a>
+          <a class="hero-link-btn" href="https://arxiv.org/abs/2603.03190" target="_blank" rel="noopener">arXiv</a>
         </div>
 
         <p class="hero-tagline">EEG representation learning should be guided by neural encoding.</p>
@@ -459,9 +542,7 @@
 
     <p class="small" style="margin-top:12px;text-align:center;">
       Experiments were conducted on the
-      <a href="https://github.com/ShogoNoguchi/PredANNpp#dataset"
-         target="_blank"
-         rel="noopener">
+      <a href="https://github.com/ShogoNoguchi/PredANNpp#dataset" target="_blank" rel="noopener">
         NMED-T dataset
       </a>.
     </p>
@@ -491,15 +572,15 @@
   <!-- SYNC VIZ -->
   <div id="syncviz" class="container section anchor">
     <h2 class="section-title-gradient">Surprisal / Entropy Visualization</h2>
-    <p class="section-intro">
+    <p class="section-intro section-copy-left">
       Visualization for Surprisal / Entropy Q128 sequences. The page loads three demo tracks and synchronized
       Surprisal / Entropy data with the 16-second context setting used in the main experiments.
     </p>
-    <p>
+    <p class="section-copy-left">
       Timeline sync is aligned to <code>segment_start_s</code>, with a hard upper bound of 240 sec
       (shorter tracks end at their natural duration).
     </p>
-    <p>
+    <p class="section-copy-left">
       Discretization method: continuous Surprisal and Entropy sequences were pooled across all songs
       (NMED-T 10 songs + 3 demo tracks), then feature-wise 128-bin equal-frequency quantile binning was applied.
       Each frame value was converted to a discrete label in the range 0–127 using the resulting bin boundaries.
@@ -554,6 +635,23 @@
         <canvas id="surprisalCanvas"></canvas>
       </div>
 
+      <details class="note-toggle" style="margin-top:10px;">
+        <summary>Why are surprisal &amp; entropy elevated at the start of each track? <span class="toggle-hint">tap to
+            expand</span></summary>
+        <p>
+          The elevated surprisal and entropy values at the beginning of tracks arise from the context-window design.
+          For each segment, logits are computed using a fixed 16-second lookback window. At song onset, this window
+          extends beyond the start of the audio, so the missing left context is padded with
+          <code>special_token_id</code>, a reserved sentinel token used for invalid or masked positions. As a result,
+          early segments are conditioned partly on synthetic padding rather than real audio history, making the model's
+          predictions broader and less confident. This increases entropy, which reflects distributional uncertainty,
+          and also increases surprisal, because the true tokens receive lower probability. The effect lasts for about
+          13 seconds (<code>window_sec − segment_sec</code>), because segments starting before 13 s still require
+          left padding. Thus, the early elevation is a systematic artifact of the padding scheme rather than a
+          property of the music itself.
+        </p>
+      </details>
+
       <div id="syncStatus" class="notice" style="margin-top:10px;">
         Initializing synchronized visualization...
       </div>
@@ -576,13 +674,11 @@
   <!-- DEMO -->
   <div id="demo" class="container section anchor">
     <h2 class="section-title-gradient">Demo (Gradio)</h2>
-    <p class="section-intro">
+    <p class="section-intro section-copy-left">
       This section shows a demo video of the <code>demo.py</code> Gradio interface running.
-      For instructions on how to launch the demo locally and run EEG → Song-ID inference,
+      For instructions on how to launch the demo locally and run EEG&nbsp;→&nbsp;Song-ID inference,
       see the
-      <a href="https://github.com/ShogoNoguchi/PredANNpp#quick-demo-gradio-ui"
-         target="_blank"
-         rel="noopener">
+      <a href="https://github.com/ShogoNoguchi/PredANNpp#quick-demo-gradio-ui" target="_blank" rel="noopener">
         Quick Demo (Gradio UI)
       </a>
       section in the GitHub README.
@@ -622,9 +718,7 @@
               <td>10k epochs (50% masking)</td>
               <td>3.5k epochs</td>
               <td>
-                <a href="https://huggingface.co/Shogo-Noguchi/PredANNpp-Acoustic"
-                   target="_blank"
-                   rel="noopener">
+                <a href="https://huggingface.co/Shogo-Noguchi/PredANNpp-Acoustic" target="_blank" rel="noopener">
                   Shogo-Noguchi/PredANNpp-Acoustic
                 </a>
               </td>
@@ -636,9 +730,7 @@
               <td>10k epochs (50% masking)</td>
               <td>3.5k epochs</td>
               <td>
-                <a href="https://huggingface.co/Shogo-Noguchi/PredANNpp-Entropy-ctx16"
-                   target="_blank"
-                   rel="noopener">
+                <a href="https://huggingface.co/Shogo-Noguchi/PredANNpp-Entropy-ctx16" target="_blank" rel="noopener">
                   Shogo-Noguchi/PredANNpp-Entropy-ctx16
                 </a>
               </td>
@@ -650,9 +742,7 @@
               <td>10k epochs (50% masking)</td>
               <td>3.5k epochs</td>
               <td>
-                <a href="https://huggingface.co/Shogo-Noguchi/PredANNpp-Surprisal-ctx16"
-                   target="_blank"
-                   rel="noopener">
+                <a href="https://huggingface.co/Shogo-Noguchi/PredANNpp-Surprisal-ctx16" target="_blank" rel="noopener">
                   Shogo-Noguchi/PredANNpp-Surprisal-ctx16
                 </a>
               </td>
