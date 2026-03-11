@@ -1,5 +1,14 @@
 # Expectation and Acoustic Neural Network Representations Enhance Music Identification from Brain Activity
 
+[![Python](https://img.shields.io/badge/Python-3.8-3776AB?style=flat&logo=python&logoColor=white)](#setup)
+[![PyTorch](https://img.shields.io/badge/PyTorch-2.1.2%2Bcu118-EE4C2C?style=flat&logo=pytorch&logoColor=white)](#setup)
+[![PyTorch Lightning](https://img.shields.io/badge/PyTorch%20Lightning-1.4.0-792EE5?style=flat)](#setup)
+[![Gradio](https://img.shields.io/badge/Gradio-demo-F97316?style=flat)](demo.py)
+[![Hugging Face](https://img.shields.io/badge/Hugging%20Face-models-FFD21E?style=flat&logo=huggingface&logoColor=black)](https://huggingface.co/collections/Shogo-Noguchi/predann-models)
+[![Pages](https://img.shields.io/badge/GitHub%20Pages-live-222222?style=flat&logo=githubpages&logoColor=white)](https://shogonoguchi.github.io/PredANNpp/)
+[![License](https://img.shields.io/badge/License-CC--BY--SA%204.0-lightgrey?style=flat&logo=creativecommons&logoColor=white)](LICENSE)
+[![arXiv](https://img.shields.io/badge/arXiv-2603.03190-B31B1B?style=flat&logo=arxiv&logoColor=white)](https://arxiv.org/abs/2603.03190)
+
 **PredANN++** is a representation-learning framework for EEG-based music identification.
 
 The model learns EEG representations by predicting music-derived neural network features (Acoustic / Surprisal / Entropy) computed from the corresponding audio stimulus.  
