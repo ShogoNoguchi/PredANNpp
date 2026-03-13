@@ -415,14 +415,21 @@
     <h2 class="section-title-gradient">Abstract</h2>
     <div class="card abstract-card" style="padding:20px;">
       <p style="margin:0;">
-        During music listening, cortical activity encodes both acoustic and expectation-related information. 
-        Prior work has shown that ANN representations resemble cortical representations and can serve as supervisory signals for EEG recognition. 
-        Here we show that distinguishing acoustic and expectation-related ANN representations as teacher targets improves EEG-based music identification. 
-        Models pretrained to predict either representation outperform non-pretrained baselines, and combining them yields complementary gains that exceed strong seed ensembles formed by varying random initializations. 
-        These findings show that teacher representation type shapes downstream performance and that representation learning can be guided by neural encoding.
+        During music listening, cortical activity encodes both acoustic and expectation-related information.
+        Prior work has shown that ANN representations resemble cortical representations and can serve as supervisory
+        signals for EEG recognition.
+        Here we show that distinguishing acoustic and expectation-related ANN representations as teacher targets
+        improves EEG-based music identification.
+        Models pretrained to predict either representation outperform non-pretrained baselines, and combining them
+        yields complementary gains that exceed strong seed ensembles formed by varying random initializations.
+        These findings show that teacher representation type shapes downstream performance and that representation
+        learning can be guided by neural encoding.
         This work points toward advances in predictive music cognition and neural decoding.
-        Our expectation representation, computed directly from raw signals without manual labels, reflects predictive structure beyond onset or pitch, enabling investigation of multilayer predictive encoding across diverse stimuli.
-        Its scalability to large, diverse datasets further suggests potential for developing general-purpose EEG models grounded in cortical encoding principles.
+        Our expectation representation, computed directly from raw signals without manual labels, reflects predictive
+        structure beyond onset or pitch, enabling investigation of multilayer predictive encoding across diverse
+        stimuli.
+        Its scalability to large, diverse datasets further suggests potential for developing general-purpose EEG models
+        grounded in cortical encoding principles.
       </p>
     </div>
   </div>
@@ -557,6 +564,9 @@
         <div class="cap">
           <strong>Diversity should be representational, not random.</strong>
           Ensembling models trained on distinct teacher representations outperforms equally sized multi-seed baselines.
+          <div class="small" style="margin-top:6px;">
+            Statistical notation: * p&lt;0.05, ** p&lt;0.01, *** p&lt;0.001 (McNemar's test).
+          </div>
         </div>
       </div>
     </div>

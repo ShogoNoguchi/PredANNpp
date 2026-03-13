@@ -720,7 +720,7 @@
             rmsMeta = rmsResult;
             draw();
             const durNow = getDuration() || dataEndSec;
-            statusEl.textContent = `${track.display_title || track.id} (0:00 – ${fmt(durNow)}). Press ▶ to play. RMS ready (${rmsMeta.sampleRate} Hz, frame=${rmsMeta.frameLength}, hop=${rmsMeta.hopLength}).`;
+            statusEl.textContent = `${track.display_title || track.id} (0:00 – ${fmt(durNow)}). Press ▶ to play.`;
           }
         }).catch(() => {
           const durNow = getDuration() || dataEndSec;
