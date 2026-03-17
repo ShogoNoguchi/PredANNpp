@@ -393,7 +393,7 @@
           <a class="hero-link-btn" href="https://arxiv.org/abs/2603.03190" target="_blank" rel="noopener">arXiv</a>
         </div>
 
-        <p class="hero-tagline">EEG representation learning should be guided by neural encoding.</p>
+        <p class="hero-tagline">Neural encoding can guide EEG representation learning.</p>
       </div>
     </div>
   </div>
@@ -404,8 +404,7 @@
       <img class="zoomable" src="./assets/img/concept.png" alt="Conceptual overview of PredANN++" />
       <div class="cap" style="padding:16px 18px 18px;">
         <strong>Concept.</strong>
-        PredANN++ aligns EEG with neurobiologically distinct teacher signals—acoustic structure and predictive
-        structure—and then exploits their complementarity through ensembling.
+        PredANN++ aligns EEG with acoustic and expectation-related teacher signals, then combines the resulting models for complementary gains.
       </div>
     </div>
   </div>
@@ -438,8 +437,7 @@
           data-fallback="Missing image: docs/assets/img/Neural_Network_Architecture.png  (copy from your figs/Neural_Network_Architecture.png)" />
         <div class="cap">
           <strong>Architecture.</strong>
-          PredANN++ pretrains an EEG encoder with masked prediction of discretized teacher tokens while jointly
-          stabilizing learning with an auxiliary Song ID objective.
+          PredANN++ pretrains an EEG encoder by predicting masked teacher tokens, with an auxiliary Song ID loss to stabilize learning.
         </div>
       </div>
 
@@ -447,9 +445,8 @@
         <img class="zoomable" src="./assets/img/data_prep.png" alt="ANN representation calculation and discretization"
           data-fallback="Missing image: docs/assets/img/data_prep.png  (copy from your figs/data_prep.png)" />
         <div class="cap">
-          <strong>Teacher construction.</strong>
-          Audio is converted into complementary targets: MuQ acoustic embeddings and MusicGen-derived Surprisal /
-          Entropy, then discretized into temporally aligned supervision for EEG pretraining.
+          <strong>Teacher signals.</strong>
+          Audio is converted into three teacher targets—Acoustic, Surprisal, and Entropy—then discretized and aligned with EEG.
         </div>
       </div>
     </div>
@@ -459,7 +456,7 @@
   <div id="results" class="container section anchor">
     <h2 class="section-title-gradient">Results</h2>
     <p class="section-intro">
-      A compact summary of the main quantitative findings and the key figures supporting the paper’s claims.
+      Main quantitative findings at a glance.
     </p>
 
     <div class="card" style="padding:14px;">
@@ -481,20 +478,20 @@
               <td>Transformer EEG encoder trained from scratch.</td>
             </tr>
             <tr>
-              <td><strong>Single model (teacher pretrain)</strong></td>
-              <td>Acoustic (MuQ)</td>
+              <td><strong>Single model (pretrained)</strong></td>
+              <td>Acoustic</td>
               <td><strong>0.859</strong></td>
               <td>Best single model.</td>
             </tr>
             <tr>
-              <td><strong>Single model (teacher pretrain)</strong></td>
-              <td>Surprisal (ctx16)</td>
+              <td><strong>Single model (pretrained)</strong></td>
+              <td>Surprisal (16s)</td>
               <td><strong>0.855</strong></td>
               <td>Expectation-related representation.</td>
             </tr>
             <tr>
-              <td><strong>Single model (teacher pretrain)</strong></td>
-              <td>Entropy (ctx16)</td>
+              <td><strong>Single model (pretrained)</strong></td>
+              <td>Entropy (16s)</td>
               <td><strong>0.850</strong></td>
               <td>Expectation-related representation.</td>
             </tr>
@@ -546,7 +543,7 @@
           data-fallback="Missing image: docs/assets/img/figure3_single_model_comparison.png  (export from your paper: single model comparison figure)" />
         <div class="cap">
           <strong>Teacher choice matters.</strong>
-          Every teacher-guided model beats full-scratch training, and MuQ gives the strongest single-model performance.
+          All teacher-pretrained models outperform full-scratch training, and the Acoustic model is the strongest single model.
         </div>
       </div>
 
@@ -555,8 +552,8 @@
           alt="Representation ensemble vs seed ensemble"
           data-fallback="Missing image: docs/assets/img/figure6_seed_vs_finetune.png" />
         <div class="cap">
-          <strong>Diversity should be representational, not random.</strong>
-          Ensembling models trained on distinct teacher representations outperforms equally sized multi-seed baselines.
+          <strong>Representation diversity matters.</strong>
+          Ensembling models pretrained with distinct teacher signals outperforms size-matched multi-seed baselines.
         </div>
       </div>
     </div>
@@ -706,8 +703,8 @@
           <tbody>
             <tr>
               <td><strong>PredANN++ Acoustic</strong></td>
-              <td>MuQ-Embedding</td>
-              <td>16s</td>
+              <td>MuQ Acoustic Embedding</td>
+              <td>-</td>
               <td>10k epochs (50% masking)</td>
               <td>3.5k epochs</td>
               <td>
