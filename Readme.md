@@ -57,40 +57,19 @@ pip install -r requirements.txt
 
 ## Released Checkpoints
 
-We release PredANN++ checkpoints through the Hugging Face collection:
+PredANN++ checkpoints are available on Hugging Face 🤗:
 
 - <https://huggingface.co/collections/Shogo-Noguchi/predann-models>
 
-### Naming convention
-
-The repository names use explicit stage, target, context, epoch, and seed fields. Legacy Hugging Face repositories are retained for backward compatibility.
-
-| Checkpoint family | Naming pattern | What it can do |
-|---|---|---|
-| Encoder-only finetuned Song ID model | `PredANNpp-NMEDT-SongID-EncoderOnly-{Target[-ctxN]}-pt{pretrain_epoch}-ft3500-seed42` | Direct 3-second EEG → Song ID inference. |
-| Multitask pretraining checkpoint | `PredANNpp-Pretrain-{Target[-ctxN]}-ep{pretrain_epoch}-seed42` | Encoder/decoder masked teacher-token prediction, plus auxiliary Song ID pathway. Not a final encoder-only classifier. |
-| Full-scratch Song ID baseline | `PredANNpp-NMEDT-SongID-FullScratch-ep3500-seed{seed}` | Direct Song ID baseline trained without pretraining. |
-
-`NMEDT` is included for task-specific Song ID classifiers because those checkpoints are tied to the NMED-T label space and evaluation setup. `NMEDT` is intentionally omitted from pretraining checkpoint names because those checkpoints are treated as representation pretraining artifacts; the model cards still disclose NMED-T as training data for provenance.
-
-### Released models
-
-| Canonical role | Target | Context | Stage | Epochs | Seed | Hugging Face |
-|---|---|---:|---|---:|---:|---|
-| `PredANNpp-NMEDT-SongID-EncoderOnly-MuQ-pt10000-ft3500-seed42` | MuQ acoustic embedding | - | Pretrain + finetune | 10k + 3.5k | 42 | [legacy: PredANNpp-Acoustic](https://huggingface.co/Shogo-Noguchi/PredANNpp-Acoustic) |
-| `PredANNpp-NMEDT-SongID-EncoderOnly-Surprisal-ctx16-pt10000-ft3500-seed42` | MusicGen Surprisal | 16 s | Pretrain + finetune | 10k + 3.5k | 42 | [legacy: PredANNpp-Surprisal-ctx16](https://huggingface.co/Shogo-Noguchi/PredANNpp-Surprisal-ctx16) |
-| `PredANNpp-NMEDT-SongID-EncoderOnly-Entropy-ctx16-pt10000-ft3500-seed42` | MusicGen Entropy | 16 s | Pretrain + finetune | 10k + 3.5k | 42 | [legacy: PredANNpp-Entropy-ctx16](https://huggingface.co/Shogo-Noguchi/PredANNpp-Entropy-ctx16) |
-| `PredANNpp-Pretrain-MuQ-ep10000-seed42` | MuQ acoustic embedding | - | Multitask pretrain only | 10k | 42 | [HF](https://huggingface.co/Shogo-Noguchi/PredANNpp-Pretrain-MuQ-ep10000-seed42) |
-| `PredANNpp-Pretrain-Surprisal-ctx16-ep10000-seed42` | MusicGen Surprisal | 16 s | Multitask pretrain only | 10k | 42 | [HF](https://huggingface.co/Shogo-Noguchi/PredANNpp-Pretrain-Surprisal-ctx16-ep10000-seed42) |
-| `PredANNpp-Pretrain-Entropy-ctx16-ep10000-seed42` | MusicGen Entropy | 16 s | Multitask pretrain only | 10k | 42 | [HF](https://huggingface.co/Shogo-Noguchi/PredANNpp-Pretrain-Entropy-ctx16-ep10000-seed42) |
-| `PredANNpp-NMEDT-SongID-FullScratch-ep3500-seed42` | None | - | Full-scratch Song ID baseline | 3.5k | 42 | [HF](https://huggingface.co/Shogo-Noguchi/PredANNpp-NMEDT-SongID-FullScratch-ep3500-seed42) |
-
-Common settings:
-
-- Dataset: NMED-T.
-- Input: 128-channel EEG, 125 Hz, 3-second segments.
-- Task-specific classifiers output Song ID logits over 10 classes.
-- Pretraining checkpoints should be loaded with the corresponding multitask module (`MuQMultitask`, `SurpMultitask`, or `EntropyMultitask`), not as final encoder-only classifiers.
+| Model | Target | Stage | Epochs | Seed | Hugging Face 🤗 |
+|---|---|---|---:|---:|---|
+| `PredANNpp-NMEDT-SongID-EncoderOnly-MuQ-pt10000-ft3500-seed42` | MuQ acoustic embedding | Song ID classifier | 10k pretrain + 3.5k finetune | 42 | [HF](https://huggingface.co/Shogo-Noguchi/PredANNpp-NMEDT-SongID-EncoderOnly-MuQ-pt10000-ft3500-seed42) |
+| `PredANNpp-NMEDT-SongID-EncoderOnly-Surprisal-ctx16-pt10000-ft3500-seed42` | MusicGen Surprisal, 16 s context | Song ID classifier | 10k pretrain + 3.5k finetune | 42 | [HF](https://huggingface.co/Shogo-Noguchi/PredANNpp-NMEDT-SongID-EncoderOnly-Surprisal-ctx16-pt10000-ft3500-seed42) |
+| `PredANNpp-NMEDT-SongID-EncoderOnly-Entropy-ctx16-pt10000-ft3500-seed42` | MusicGen Entropy, 16 s context | Song ID classifier | 10k pretrain + 3.5k finetune | 42 | [HF](https://huggingface.co/Shogo-Noguchi/PredANNpp-NMEDT-SongID-EncoderOnly-Entropy-ctx16-pt10000-ft3500-seed42) |
+| `PredANNpp-Pretrain-MuQ-ep10000-seed42` | MuQ acoustic embedding | Multitask pretraining checkpoint | 10k pretrain | 42 | [HF](https://huggingface.co/Shogo-Noguchi/PredANNpp-Pretrain-MuQ-ep10000-seed42) |
+| `PredANNpp-Pretrain-Surprisal-ctx16-ep10000-seed42` | MusicGen Surprisal, 16 s context | Multitask pretraining checkpoint | 10k pretrain | 42 | [HF](https://huggingface.co/Shogo-Noguchi/PredANNpp-Pretrain-Surprisal-ctx16-ep10000-seed42) |
+| `PredANNpp-Pretrain-Entropy-ctx16-ep10000-seed42` | MusicGen Entropy, 16 s context | Multitask pretraining checkpoint | 10k pretrain | 42 | [HF](https://huggingface.co/Shogo-Noguchi/PredANNpp-Pretrain-Entropy-ctx16-ep10000-seed42) |
+| `PredANNpp-NMEDT-SongID-FullScratch-ep3500-seed42` | Song ID labels | Full-scratch Song ID classifier | 3.5k training | 42 | [HF](https://huggingface.co/Shogo-Noguchi/PredANNpp-NMEDT-SongID-FullScratch-ep3500-seed42) |
 
 ## Quick Demo (Gradio UI)
 
