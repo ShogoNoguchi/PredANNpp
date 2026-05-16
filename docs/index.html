@@ -685,64 +685,91 @@
 
   <!-- CHECKPOINTS -->
   <div id="checkpoints" class="container section anchor">
-    <h2 class="section-title-gradient">Pretrained Checkpoints</h2>
-
-    <div class="card" style="padding:14px;">
-      <div class="table-wrap">
-        <table aria-label="Checkpoints table">
-          <thead>
-            <tr>
-              <th>Model</th>
-              <th>Target representation</th>
-              <th>Context</th>
-              <th>Pretraining</th>
-              <th>Finetuning</th>
-              <th>Link</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><strong>PredANN++ Acoustic</strong></td>
-              <td>MuQ Acoustic Embedding</td>
-              <td>-</td>
-              <td>10k epochs (50% masking)</td>
-              <td>3.5k epochs</td>
-              <td>
-                <a href="https://huggingface.co/Shogo-Noguchi/PredANNpp-Acoustic" target="_blank" rel="noopener">
-                  Shogo-Noguchi/PredANNpp-Acoustic
-                </a>
-              </td>
-            </tr>
-            <tr>
-              <td><strong>PredANN++ Entropy</strong></td>
-              <td>MusicGen Entropy</td>
-              <td>16s</td>
-              <td>10k epochs (50% masking)</td>
-              <td>3.5k epochs</td>
-              <td>
-                <a href="https://huggingface.co/Shogo-Noguchi/PredANNpp-Entropy-ctx16" target="_blank" rel="noopener">
-                  Shogo-Noguchi/PredANNpp-Entropy-ctx16
-                </a>
-              </td>
-            </tr>
-            <tr>
-              <td><strong>PredANN++ Surprisal</strong></td>
-              <td>MusicGen Surprisal</td>
-              <td>16s</td>
-              <td>10k epochs (50% masking)</td>
-              <td>3.5k epochs</td>
-              <td>
-                <a href="https://huggingface.co/Shogo-Noguchi/PredANNpp-Surprisal-ctx16" target="_blank" rel="noopener">
-                  Shogo-Noguchi/PredANNpp-Surprisal-ctx16
-                </a>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
+  <h2 class="section-title-gradient">Released Checkpoints</h2>
+  <p>PredANN++ checkpoints are released through the Hugging Face collection: <a href="https://huggingface.co/collections/Shogo-Noguchi/predann-models">Shogo-Noguchi/predann-models</a>.</p>
+  <p>The new naming convention encodes stage, target, context, epoch count, and seed. Legacy repository links are kept for backward compatibility.</p>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Canonical role</th>
+          <th>Target</th>
+          <th>Context</th>
+          <th>Stage</th>
+          <th>Epochs</th>
+          <th>Seed</th>
+          <th>Hugging Face</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>PredANNpp-NMEDT-SongID-EncoderOnly-MuQ-pt10000-ft3500-seed42</code></td>
+          <td>MuQ acoustic embedding</td>
+          <td>-</td>
+          <td>Pretrain + finetune</td>
+          <td>10k + 3.5k</td>
+          <td>42</td>
+          <td><a href="https://huggingface.co/Shogo-Noguchi/PredANNpp-Acoustic">legacy repo</a></td>
+        </tr>
+        <tr>
+          <td><code>PredANNpp-NMEDT-SongID-EncoderOnly-Surprisal-ctx16-pt10000-ft3500-seed42</code></td>
+          <td>MusicGen Surprisal</td>
+          <td>16 s</td>
+          <td>Pretrain + finetune</td>
+          <td>10k + 3.5k</td>
+          <td>42</td>
+          <td><a href="https://huggingface.co/Shogo-Noguchi/PredANNpp-Surprisal-ctx16">legacy repo</a></td>
+        </tr>
+        <tr>
+          <td><code>PredANNpp-NMEDT-SongID-EncoderOnly-Entropy-ctx16-pt10000-ft3500-seed42</code></td>
+          <td>MusicGen Entropy</td>
+          <td>16 s</td>
+          <td>Pretrain + finetune</td>
+          <td>10k + 3.5k</td>
+          <td>42</td>
+          <td><a href="https://huggingface.co/Shogo-Noguchi/PredANNpp-Entropy-ctx16">legacy repo</a></td>
+        </tr>
+        <tr>
+          <td><code>PredANNpp-Pretrain-MuQ-ep10000-seed42</code></td>
+          <td>MuQ acoustic embedding</td>
+          <td>-</td>
+          <td>Multitask pretrain only</td>
+          <td>10k</td>
+          <td>42</td>
+          <td><a href="https://huggingface.co/Shogo-Noguchi/PredANNpp-Pretrain-MuQ-ep10000-seed42">HF</a></td>
+        </tr>
+        <tr>
+          <td><code>PredANNpp-Pretrain-Surprisal-ctx16-ep10000-seed42</code></td>
+          <td>MusicGen Surprisal</td>
+          <td>16 s</td>
+          <td>Multitask pretrain only</td>
+          <td>10k</td>
+          <td>42</td>
+          <td><a href="https://huggingface.co/Shogo-Noguchi/PredANNpp-Pretrain-Surprisal-ctx16-ep10000-seed42">HF</a></td>
+        </tr>
+        <tr>
+          <td><code>PredANNpp-Pretrain-Entropy-ctx16-ep10000-seed42</code></td>
+          <td>MusicGen Entropy</td>
+          <td>16 s</td>
+          <td>Multitask pretrain only</td>
+          <td>10k</td>
+          <td>42</td>
+          <td><a href="https://huggingface.co/Shogo-Noguchi/PredANNpp-Pretrain-Entropy-ctx16-ep10000-seed42">HF</a></td>
+        </tr>
+        <tr>
+          <td><code>PredANNpp-NMEDT-SongID-FullScratch-ep3500-seed42</code></td>
+          <td>None</td>
+          <td>-</td>
+          <td>Full-scratch Song ID baseline</td>
+          <td>3.5k</td>
+          <td>42</td>
+          <td><a href="https://huggingface.co/Shogo-Noguchi/PredANNpp-NMEDT-SongID-FullScratch-ep3500-seed42">HF</a></td>
+        </tr>
+      </tbody>
+    </table>
   </div>
-
+  <p><strong>Naming note:</strong> <code>NMEDT</code> is included for task-specific Song ID classifiers. It is intentionally omitted from pretraining checkpoint names because those checkpoints are representation pretraining artifacts; their model cards still disclose NMED-T as the training data.</p>
+  </div>
 
   <!-- CITE -->
   <div id="cite" class="container section anchor">
