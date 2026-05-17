@@ -61,7 +61,7 @@ PredANN++ checkpoints are available on Hugging Face 🤗:
 
 - <https://huggingface.co/collections/Shogo-Noguchi/predann-models>
 
-| Model | Target | Stage | Epochs | Seed | Hugging Face 🤗 |
+| Model | Pretraining target | Stage | Epochs | Seed | Hugging Face 🤗 |
 |---|---|---|---:|---:|---|
 | `PredANNpp-NMEDT-SongID-EncoderOnly-MuQ-pt10000-ft3500-seed42` | MuQ acoustic embedding | Song ID classifier | 10k pretrain + 3.5k finetune | 42 | [HF](https://huggingface.co/Shogo-Noguchi/PredANNpp-NMEDT-SongID-EncoderOnly-MuQ-pt10000-ft3500-seed42) |
 | `PredANNpp-NMEDT-SongID-EncoderOnly-Surprisal-ctx16-pt10000-ft3500-seed42` | MusicGen Surprisal, 16 s context | Song ID classifier | 10k pretrain + 3.5k finetune | 42 | [HF](https://huggingface.co/Shogo-Noguchi/PredANNpp-NMEDT-SongID-EncoderOnly-Surprisal-ctx16-pt10000-ft3500-seed42) |
@@ -69,7 +69,7 @@ PredANN++ checkpoints are available on Hugging Face 🤗:
 | `PredANNpp-Pretrain-MuQ-ep10000-seed42` | MuQ acoustic embedding | Multitask pretraining checkpoint | 10k pretrain | 42 | [HF](https://huggingface.co/Shogo-Noguchi/PredANNpp-Pretrain-MuQ-ep10000-seed42) |
 | `PredANNpp-Pretrain-Surprisal-ctx16-ep10000-seed42` | MusicGen Surprisal, 16 s context | Multitask pretraining checkpoint | 10k pretrain | 42 | [HF](https://huggingface.co/Shogo-Noguchi/PredANNpp-Pretrain-Surprisal-ctx16-ep10000-seed42) |
 | `PredANNpp-Pretrain-Entropy-ctx16-ep10000-seed42` | MusicGen Entropy, 16 s context | Multitask pretraining checkpoint | 10k pretrain | 42 | [HF](https://huggingface.co/Shogo-Noguchi/PredANNpp-Pretrain-Entropy-ctx16-ep10000-seed42) |
-| `PredANNpp-NMEDT-SongID-FullScratch-ep3500-seed42` | Song ID labels | Full-scratch Song ID classifier | 3.5k training | 42 | [HF](https://huggingface.co/Shogo-Noguchi/PredANNpp-NMEDT-SongID-FullScratch-ep3500-seed42) |
+| `PredANNpp-NMEDT-SongID-FullScratch-ep3500-seed42` | - | Full-scratch Song ID classifier | 3.5k training | 42 | [HF](https://huggingface.co/Shogo-Noguchi/PredANNpp-NMEDT-SongID-FullScratch-ep3500-seed42) |
 
 ## Quick Demo (Gradio UI)
 
