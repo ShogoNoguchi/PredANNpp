@@ -1,0 +1,34 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it using the metadata below."
+title: "PredANN++: Code for Expectation and Acoustic Neural Network Representations Enhance Music Identification from Brain Activity"
+type: software
+version: 1.0.0
+abstract: >-
+  Source code for the PredANN++ pipeline for EEG-based music
+  identification using acoustic, surprisal, and entropy teacher
+  representations.
+authors:
+  - family-names: "Noguchi"
+    given-names: "Shogo"
+    affiliation: "Sony Computer Science Laboratories, Inc."
+  - family-names: "Akama"
+    given-names: "Taketo"
+    affiliation: "Sony Computer Science Laboratories, Inc."
+  - family-names: "Nakamura"
+    given-names: "Tai"
+    affiliation: "Sony Computer Science Laboratories, Inc."
+  - family-names: "Minamikawa"
+    given-names: "Shun"
+    affiliation: "Sony Computer Science Laboratories, Inc."
+  - family-names: "Polouliakh"
+    given-names: "Natalia"
+    affiliation: "Sony Computer Science Laboratories, Inc."
+repository-code: "https://github.com/ShogoNoguchi/PredANNpp"
+url: "https://shogonoguchi.github.io/PredANNpp/"
+license: "CC-BY-SA-4.0"
+keywords:
+  - "EEG"
+  - "music identification"
+  - "representation learning"
+  - "masked prediction"
+  - "PredANN++"
